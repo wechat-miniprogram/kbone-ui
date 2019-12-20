@@ -1,7 +1,7 @@
 {
   "name": "kbone-ui",
-  "version": "0.5.1",
-  "description": "Weui component Library for kbone-vue",
+  "version": "0.5.2",
+  "description": "Weui component Library for kbone-ui",
   "main": "lib/index.js",
   "scripts": {
     "dev:web": "cross-env NODE_ENV=development webpack-dev-server --inline --progress --config build/webpack.dev.config.js",
