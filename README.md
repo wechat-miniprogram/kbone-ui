@@ -1,4 +1,4 @@
-## 介绍
+# kbone-ui
 
 `kbone-ui` 是一款依据 kbone vue 框架开发的多端 UI 库。
 
@@ -12,9 +12,27 @@ kbone 框架是用来对齐 Web 和 小程序多端的一个解决方案。在�
 * 对齐 [微信weui](https://weui.io) 样式组件
 
 
-## 官方示例
+## 相关链接
 
 
+## 快速上手
+
+下载 kbone-ui
+
+```sh
+npm install kbone-ui  
+```
+
+加载全部组件内容，并引入 weui 样式库：
+
+```js
+import KboneUI from 'kbone-ui'
+import 'kbone-ui/lib/weui/weui.css'
+
+Vue.use(KboneUI)
+```
 
 
-## 项目介绍
+## LICENSE
+
+MIT
