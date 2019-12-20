@@ -19,7 +19,7 @@
     "weui",
     "kbone-ui-weui"
   ],
-  "author": "Jimmy_VV",
+  "author": "wechat-miniprogram",
   "license": "MIT",
   "browserslist": [
     "ie > 9",
