@@ -26,7 +26,8 @@ module.exports = {
     path: path.resolve(process.cwd(), "./lib"),
     filename: "[name].js",
     library: "kbone-ui",
-    libraryTarget: "umd"
+    libraryTarget: "umd",
+    globalObject: 'this'
   },
   module:{
     rules: [
