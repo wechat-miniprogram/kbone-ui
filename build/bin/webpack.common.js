@@ -24,10 +24,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(process.cwd(), "./lib"),
-    publicPath: '/dist/',
     filename: "[name].js",
-    chunkFilename: "[id].js",
-    libraryExport: "default",
     library: "kbone-ui",
     libraryTarget: "umd"
   },
