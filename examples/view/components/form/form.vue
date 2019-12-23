@@ -2,7 +2,7 @@
     <KView class="page form js_show">
         <KView class="page__hd">
             <h1 class="page__title">Form</h1>
-            <p class="page__desc">Flex布局</p>
+            <p class="page__desc">form 表单内容</p>
         </KView>
         <KCells checkbox title="Checkbox">
             <KCheckboxGroup @change="handleChange" v-model="checkboxGrpValues">
