@@ -131,6 +131,8 @@ export default {
             
         },
         handleMove(event){
+            // TODO 解决当出现 scroll-view 和 swiper 嵌套时出现诡异滑动的异常点
+
             if(!this._contentTrackT) return;
             if(event.type === 'touchmove'){
                 event.clientY = event.touches[0].clientY
