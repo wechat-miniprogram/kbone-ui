@@ -1,20 +1,22 @@
 <template>
-    <div @click="$emit('click')" class="weui-flex"
-        :style="{
-            'flex-direction':direction
-        }"
-    >
-        <slot></slot>
-    </div>
+  <div
+    :style="{
+      'flex-direction':direction
+    }"
+    class="weui-flex"
+    @click="$emit('click')"
+  >
+    <slot/>
+  </div>
 </template>
 
 <script>
 export default {
-    name:"KFlex",
-    props:{
-        direction:{
+    name: 'KFlex',
+    props: {
+        direction: {
             type: String,
-            default:"row"
+            default: 'row'
         }
     }
 }

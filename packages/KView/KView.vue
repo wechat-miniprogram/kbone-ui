@@ -1,41 +1,42 @@
 <template>
-    <div @click="clickHander" 
-        :hoverStartTime="hoverStartTime"
-        :hoverStayTime="hoverStayTime"
-        :hoverStopPropagation="hoverStopPropagation"
-        :hoverClass="hoverClass"
-    >
-        <slot></slot>
-    </div>
+  <div
+    :hoverStartTime="hoverStartTime"
+    :hoverStayTime="hoverStayTime"
+    :hoverStopPropagation="hoverStopPropagation"
+    :hoverClass="hoverClass"
+    @click="clickHander"
+  >
+    <slot/>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "KView",
-  props: {
-    hoverStartTime: {
-      type: Number,
-      value: 50,
-      public: true
+    name: 'KView',
+    props: {
+        hoverStartTime: {
+            type: Number,
+            value: 50,
+            public: true
+        },
+        hoverStayTime: {
+            type: Number,
+            value: 400,
+            public: true
+        },
+        hoverStopPropagation: {
+            type: Boolean,
+            value: false,
+        },
+        hoverClass: {
+            type: String,
+            value: ''
+        }
     },
-    hoverStayTime: {
-      type: Number,
-      value: 400,
-      public: true
-    },
-    hoverStopPropagation: {
-      type: Boolean,
-      value: false,
-    },
-    hoverClass: {
-      type: String,
-      value: ""
+    methods: {
+        clickHander(event) {
+            this.$emit('click', event)
+        }
     }
-  },
-  methods: {
-    clickHander(event) {
-      this.$emit("click", event);
-    }
-  }
-};
+}
 </script>

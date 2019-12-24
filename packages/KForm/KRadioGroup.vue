@@ -1,52 +1,52 @@
 <template>
-    <KView>
-        <slot></slot>
-    </KView>
+  <KView>
+    <slot/>
+  </KView>
 </template>
 
 <script>
 import {findDownComponent} from '@utils/util'
 
 export default {
-    name:"KRadioGroup",
-    props:{
-        value:{
-            type: [String,Number,Boolean]
+    name: 'KRadioGroup',
+    props: {
+        value: {
+            type: [String, Number, Boolean]
         }
     },
-    data(){
+    data() {
         return {
             currentValue: this.value
         }
     },
-    watch:{
-        value(newValue){
+    watch: {
+        value(newValue) {
             this.currentValue = newValue
         },
-        currentValue(){
+        currentValue() {
             this.updateModel()
         }
     },
-    methods:{
-        updateModel(){
-            this.childs = findDownComponent(this,'KRadio')
-            this.childs.forEach(child=>{
-                if(child.label === this.currentValue){
+    mounted() {
+        this.updateModel()
+    },
+    methods: {
+        updateModel() {
+            this.childs = findDownComponent(this, 'KRadio')
+            this.childs.forEach(child => {
+                if (child.label === this.currentValue) {
                     child.isChecked = true
-                }else{
+                } else {
                     child.isChecked = false
                 }
             })
         },
-        change(data){
+        change(data) {
             this.currentValue = data
-            this.$emit('input',data)
-            this.$emit('change',data)
+            this.$emit('input', data)
+            this.$emit('change', data)
         }
     },
-    mounted(){
-        this.updateModel()
-    }
 }
 </script>
 

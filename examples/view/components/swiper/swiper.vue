@@ -1,26 +1,28 @@
 <template>
-    <KView  class="page swiper js_show">
-        <KView class="page__hd">
-            <h1 class="page__title">Swiper</h1>
-            <p class="page__desc">Swiper 内容</p>
-        </KView>
-        <KView class="page__bd page__bd_spacing">
-            <KSwiper 
-                :indicator-dots="indicatorDots"
-            >
-                <KSwiperItem v-for="(item,index) in background" :key="index" >
-                    <KView :class="'swiper-item '+ item"></KView>
-                </KSwiperItem>
-            </KSwiper>
-        </KView>
+  <KView class="page swiper js_show">
+    <KView class="page__hd">
+      <h1 class="page__title">Swiper</h1>
+      <p class="page__desc">Swiper 内容</p>
     </KView>
+    <KView class="page__bd page__bd_spacing">
+      <KSwiper
+        :indicator-dots="indicatorDots"
+      >
+        <KSwiperItem
+          v-for="(item,index) in background"
+          :key="index" >
+          <KView :class="'swiper-item '+ item"/>
+        </KSwiperItem>
+      </KSwiper>
+    </KView>
+  </KView>
 </template>
 <script>
 export default {
-    data(){
+    data() {
         return {
-             background: ['demo-text-1', 'demo-text-2', 'demo-text-3'],
-             indicatorDots: false,
+            background: ['demo-text-1', 'demo-text-2', 'demo-text-3'],
+            indicatorDots: false,
         }
     }
 }

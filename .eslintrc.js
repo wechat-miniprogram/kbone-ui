@@ -1,10 +1,12 @@
 module.exports = {
   'extends': [
     'airbnb-base',
-    'plugin:promise/recommended'
+    'plugin:promise/recommended',
+    'plugin:vue/recommended'
   ],
-  'parser': 'babel-eslint',
+  'parser': 'vue-eslint-parser',
   'parserOptions': {
+    'parser': 'babel-eslint',
     'ecmaVersion': 9,
     'ecmaFeatures': {
       'jsx': false
@@ -34,6 +36,9 @@ module.exports = {
     'handle-callback-err': [
       'error',
       '^(err|error)$'
+    ],
+    'import/extensions': [
+      'off'
     ],
     'import/no-unresolved': [
       'error',
@@ -101,6 +106,7 @@ module.exports = {
     'camelcase': 'off',
     'no-control-regex': 'off',
     'no-await-in-loop': 'off',
+    'vue/require-default-prop': 'off'
   },
   'globals': {
     'window': true,

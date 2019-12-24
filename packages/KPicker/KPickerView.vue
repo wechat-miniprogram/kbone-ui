@@ -1,60 +1,61 @@
 <template>
-   <wx-picker-view
-    :indicator-style="indicatorStyle" 
+  <wx-picker-view
+    v-if="ismp"
+    :indicator-style="indicatorStyle"
     :indicator-class="indicatorClass"
     :mask-style="maskStyle"
-    :mask-class="maskClass"
-    v-if="ismp">
-    <slot></slot>
-   </wx-picker-view>
-    <KView v-else class="weui-picker__bd">
-        <slot></slot>
-    </KView>
+    :mask-class="maskClass">
+    <slot/>
+  </wx-picker-view>
+  <KView
+    v-else
+    class="weui-picker__bd">
+    <slot/>
+  </KView>
 </template>
 <script>
-import { ismp,findUpComponent,findDownComponent } from "@utils/util"
+import {ismp, findUpComponent, findDownComponent} from '@utils/util'
 
 export default {
-    name:"KPickerView",
-    props:{
+    name: 'KPickerView',
+    props: {
         indicatorStyle: {
-          type: String,
-          value: '',
+            type: String,
+            value: '',
         },
         indicatorClass: {
-          type: String,
-          value: '',
+            type: String,
+            value: '',
         },
         maskStyle: {
-          type: String,
-          value: '',
+            type: String,
+            value: '',
         },
         maskClass: {
-          type: String,
-          value: '',
+            type: String,
+            value: '',
         }
     },
-    data(){
+    data() {
         return {
             ismp,
         }
     },
-    methods:{
-        change(index){
-            this.$emit('change',index)
+    mounted() {
+        !ismp && this.setIndicatorStyle()
+    },
+    methods: {
+        change(index) {
+            this.$emit('change', index)
         },
-        setIndicatorStyle(){
-            let columns = findDownComponent(this,'KPickerViewColumn')
-            columns.forEach(col=>{
+        setIndicatorStyle() {
+            const columns = findDownComponent(this, 'KPickerViewColumn')
+            columns.forEach(col => {
                 // 覆盖 indicator 样式
                 col.$refs.indicator.$el.style = this.indicatorStyle
                 col.renderItems()
             })
         }
     },
-    mounted(){
-        !ismp && this.setIndicatorStyle()
-        
-    }
 }
 </script>

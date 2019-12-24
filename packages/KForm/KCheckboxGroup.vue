@@ -1,19 +1,19 @@
-<template>  
-    <KView>
-        <slot></slot>
-    </KView>
+<template>
+  <KView>
+    <slot/>
+  </KView>
 </template>
 
 <script>
-import {ismp,findDownComponent} from '@utils/util'
+import {ismp, findDownComponent} from '@utils/util'
 
 export default {
-    name: "KCheckboxGroup",
+    name: 'KCheckboxGroup',
     props: {
         value: {
             type: Array,
-            default () {
-                return [];
+            default() {
+                return []
             }
         },
     },
@@ -23,18 +23,18 @@ export default {
             currentValue: this.value
         }
     },
-    mounted(){
-        this.updateModel(true)
-    },
-    watch:{
-        value(newValue){
+    watch: {
+        value(newValue) {
             this.currentValue = newValue
         },
-        currentValue(){
+        currentValue() {
             this.updateModel(true)
         }
     },
-    methods:{
+    mounted() {
+        this.updateModel(true)
+    },
+    methods: {
         updateModel(update) {
             this.childs = findDownComponent(this, 'KCheckbox')
             if (this.childs) {
@@ -42,18 +42,18 @@ export default {
                     currentValue
                 } = this
                 this.childs.forEach((child) => {
-                    child.model = currentValue; // 数组
+                    child.model = currentValue // 数组
                     if (update) {
-                        child.currentValue = currentValue.indexOf(child.label) >= 0;
-                        child.isGroup = true;
+                        child.currentValue = currentValue.indexOf(child.label) >= 0
+                        child.isGroup = true
                     }
-                });
+                })
             }
         },
-        change(data){
+        change(data) {
             this.currentValue = data
-            this.$emit('input',data)
-            this.$emit('bindchange',data)
+            this.$emit('input', data)
+            this.$emit('bindchange', data)
         }
     },
 }
