@@ -1,3 +1,4 @@
+import {ismp} from './utils/util'
 import KView from '../packages/KView/'
 import KButton from '../packages/KButton/'
 import KButtonArea from '../packages/KButtonArea/'
@@ -73,7 +74,8 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-    version:"0.1.2",
+    version:"0.5.6",
+    ismp,
     install,
     KView,
     KButton,
