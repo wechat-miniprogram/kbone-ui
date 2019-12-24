@@ -13,6 +13,7 @@
 ## 相关链接
 
 * [kbone-ui 组件文档](https://wechat-miniprogram.github.io/kbone/docs/ui/intro/)
+* [kbone-ui 示例](https://wechat-miniprogram.github.io/kboneui/ui/#/)
 
 ## 快速上手
 
