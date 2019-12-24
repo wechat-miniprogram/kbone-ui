@@ -3,12 +3,14 @@ module.exports = {
     'airbnb-base',
     'plugin:promise/recommended'
   ],
+  'parser': 'babel-eslint',
   'parserOptions': {
     'ecmaVersion': 9,
     'ecmaFeatures': {
       'jsx': false
     },
-    'sourceType': 'module'
+    'sourceType': 'module',
+    'allowImportExportEverywhere': true
   },
   'env': {
     'es6': true,
