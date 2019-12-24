@@ -1,28 +1,26 @@
 <template>
-    <i
-    v-bind:class="classObject"
-    >
-
-    </i>
+  <i
+    :class="classObject"
+  />
 </template>
 <script>
 export default {
-    name:"KIcon",
-    props:{
-        type:{
-            type: String, 
-             // success ,info ,waiting ,circle ,warn ,download ,info ,cancel ,clear ,search
-            default:"success"
-        },
-        size:{
+    name: 'KIcon',
+    props: {
+        type: {
             type: String,
-            default:"small"
+            // success ,info ,waiting ,circle ,warn ,download ,info ,cancel ,clear ,search
+            default: 'success'
+        },
+        size: {
+            type: String,
+            default: 'small'
         }
     },
-    computed:{
-        classObject(){
+    computed: {
+        classObject() {
             return {
-                ['weui-icon-'+ this.type]: this.type !== 'loading',
+                ['weui-icon-' + this.type]: this.type !== 'loading',
                 'weui-loading': this.type === 'loading',
                 'weui-icon_msg': this.size === 'large'
             }

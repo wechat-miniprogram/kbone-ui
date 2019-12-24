@@ -1,8 +1,8 @@
 <template>
-    <div>
-        HomePage
-        <KView class="extra_class">测试</KView>
-    </div>
+  <div>
+    HomePage
+    <KView class="extra_class">测试</KView>
+  </div>
 </template>
 
 <script>
