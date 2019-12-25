@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import KView from '../KView/'
 import {findDownComponent, tweenFunctions, ismp} from '@utils/util'
+import KView from '../KView/'
 
 export default {
     name: 'KSwiper',
