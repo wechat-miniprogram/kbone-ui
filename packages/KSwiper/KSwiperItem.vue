@@ -1,15 +1,15 @@
 <template>
-    <KView class="weui-swiper-item">
-        <slot></slot>
-    </KView>
+  <KView class="weui-swiper-item">
+    <slot/>
+  </KView>
 </template>
 
 <script>
 import KView from '../KView/'
 
 export default {
-    name:"KSwiperItem",
-    components:{
+    name: 'KSwiperItem',
+    components: {
         KView
     }
 }

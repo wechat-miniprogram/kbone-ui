@@ -1,0 +1,15 @@
+.DS_Store
+node_modules
+npm-debug.log
+
+/build
+/dist
+/test
+/example
+
+.babelrc
+.eslintignore
+.eslintrc
+.gitignore
+.gitmodules
+.jestrc.json

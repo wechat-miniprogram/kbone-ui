@@ -1,26 +1,24 @@
 <template>
-    <KView 
-        v-bind:class="{
-            'weui-mask': !transparent,
-            'weui-mask_transparent': transparent
-        }"
-        @click="clickHander"
-    >
-
-    </KView>
+  <KView
+    :class="{
+      'weui-mask': !transparent,
+      'weui-mask_transparent': transparent
+    }"
+    @click="clickHander"
+  />
 </template>
 <script>
 export default {
-    name:"KMask",
-    props:{
-        transparent:{
+    name: 'KMask',
+    props: {
+        transparent: {
             type: Boolean,
-            default:false
+            default: false
         }
     },
-    methods:{
-        clickHander(event){
-            this.$emit('click',event)
+    methods: {
+        clickHander(event) {
+            this.$emit('click', event)
         }
     }
 }

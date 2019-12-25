@@ -1,5 +1,5 @@
 <template>
-    <form class="weui-form">
-        <slot></slot>
-    </form>
+  <form class="weui-form">
+    <slot/>
+  </form>
 </template>

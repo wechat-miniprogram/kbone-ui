@@ -9,3 +9,6 @@ tnpm run dev:web
 # 打开小程序端
 tnpm run dev:mp
 ```
+
+## npm 发布
+

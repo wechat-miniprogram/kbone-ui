@@ -1,6 +1,6 @@
 import KToptips from './KToptips.vue'
 
-KToptips.install = function(Vue){
+KToptips.install = function(Vue) {
     Vue.component(KToptips.name, KToptips)
 }
 

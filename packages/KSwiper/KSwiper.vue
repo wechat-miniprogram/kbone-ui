@@ -1,23 +1,34 @@
 <template>
-    <KView ref="slidesWrapper" class="weui-swiper weui-swiper-wrapper">
-        <KView ref="slides" class="weui-swiper-slides">
-            <KView ref="slideFrame" class="weui-swiper-slide-frame">
-                <slot></slot>
-            </KView>
-        </KView>
-        <KView v-if="indicatorDots"  class="weui-swiper-dots" ref="slidesDots">
-        </KView>
+  <KView
+    ref="slidesWrapper"
+    class="weui-swiper weui-swiper-wrapper">
+    <KView
+      ref="slides"
+      class="weui-swiper-slides">
+      <KView
+        ref="slideFrame"
+        class="weui-swiper-slide-frame">
+        <slot/>
+      </KView>
     </KView>
+    <KView
+      v-if="indicatorDots"
+      ref="slidesDots"
+      class="weui-swiper-dots"/>
+  </KView>
 </template>
 
 <script>
 import KView from '../KView/'
-import {findDownComponent,tweenFunctions,ismp} from '@utils/util'
+import {findDownComponent, tweenFunctions, ismp} from '@utils/util'
 
 export default {
-    name:"KSwiper",
+    name: 'KSwiper',
+    components: {
+        KView
+    },
     props: {
-        'indicatorDots': {
+        indicatorDots: {
             type: Boolean,
             default: false
         },
@@ -78,45 +89,50 @@ export default {
             default: 'default',
         },
     },
-    data(){
+    data() {
         return {
             start: {
-                    x: 0, // 手指按下时的位置
-                    y: 0,
-                    preX: 0, // move 或 touch 按下的位置
-                    preY: 0, 
-                },
+                x: 0, // 手指按下时的位置
+                y: 0,
+                preX: 0, // move 或 touch 按下的位置
+                preY: 0,
+            },
             currentPos: {
                 x: 0,
                 y: 0,
                 dx: 0, // 和手指按下时位置的差值
-                dy: 0, 
+                dy: 0,
                 ddx: 0, // 和前一个 move 位置的差值
                 ddy: 0
             },
             currentOrder: this.current,
             _contentTrackViewport: 0,
-            viewportPosition:0,
+            viewportPosition: 0,
             _contentTrackT: 0,
             _contentTrackSpeed: 0,
-            multipleItems:1,
+            multipleItems: 1,
             marginSpecified: false,
-            viewportMoveRatio:1,
-            circularEnabled:false, // 循环展示 flag
+            viewportMoveRatio: 1,
+            circularEnabled: false, // 循环展示 flag
             ismp,
         }
     },
-    components:{
-        KView
+    mounted() {
+        if (!ismp) {
+            this.$refs.slidesWrapper.$el.addEventListener('touchstart', this.handleStart, false)
+            this.$refs.slidesWrapper.$el.addEventListener('touchmove', this.handleMove, false)
+            this.$refs.slidesWrapper.$el.addEventListener('touchend', this.handleEnd, false)
+            this._resetLayout()
+        }
     },
-    methods:{
-        _getItems(){
-            return findDownComponent(this,'KSwiperItem')
+    methods: {
+        _getItems() {
+            return findDownComponent(this, 'KSwiperItem')
         },
-        handleStart(event){
-            if(event.type === 'touchstart'){
+        handleStart(event) {
+            if (event.type === 'touchstart') {
                 event.clientY = event.touches[0].clientY
-                event.clientX = event.touches[0].clientX;
+                event.clientX = event.touches[0].clientX
             }
 
             this.start = {
@@ -128,13 +144,14 @@ export default {
             this._contentTrackViewport = this.viewportPosition
             this._contentTrackT = Date.now()
             this._contentTrackSpeed = 0
-            
         },
-        handleMove(event){
-            if(!this._contentTrackT) return;
-            if(event.type === 'touchmove'){
+        handleMove(event) {
+            // TODO 解决当出现 scroll-view 和 swiper 嵌套时出现诡异滑动的异常点
+
+            if (!this._contentTrackT) return
+            if (event.type === 'touchmove') {
                 event.clientY = event.touches[0].clientY
-                event.clientX = event.touches[0].clientX;
+                event.clientX = event.touches[0].clientX
             }
 
             this.currentPos = {
@@ -156,9 +173,9 @@ export default {
             let deltaT = this._contentTrackT - prevT
             if (deltaT === 0) deltaT = 1
 
-            if(this.vertical){
-                
-            }else{
+            if (this.vertical) {
+
+            } else {
                 // 先只管水平运行
                 this.updateView(
                     -this.currentPos.dx / this.$refs.slideFrame.$el.offsetWidth,
@@ -166,8 +183,8 @@ export default {
                 )
             }
         },
-        handleEnd(event){
-            if(this.autoplay) this._scheduleAutoplay()
+        handleEnd(event) {
+            if (this.autoplay) this._scheduleAutoplay()
             this._contentTrackT = false
             let direction
             if (this._contentTrackSpeed === 0) {
@@ -175,7 +192,7 @@ export default {
             } else {
                 direction = this._contentTrackSpeed / Math.abs(this._contentTrackSpeed)
             }
-            
+
             let extraMovement = 0
             //  if (!isCancel && Math.abs(this._contentTrackSpeed) > 0.2) {
             if (Math.abs(this._contentTrackSpeed) > 0.2) {
@@ -194,20 +211,20 @@ export default {
                 this._animateViewport(toPos, 'touch', extraMovement)
             }
         },
-        _scheduleAutoplay(){
+        _scheduleAutoplay() {
             this._cancelSchedule()
-            if(this._getItems().length <= this.displayMultipleItems){
+            if (this._getItems().length <= this.displayMultipleItems) {
                 return
             }
-            const frameFunc = ()=>{
+            const frameFunc = () => {
                 this._scheduleTimeout = null
                 this._currentChangeSource = 'autoplay'
-                if(this.circularEnabled){
+                if (this.circularEnabled) {
                     this.currentOrder = this._normalizeCurrentValue(this.currentOrder + 1)
-                }else{
+                } else {
                     // 到底部，默认返回 0 位置
                     this.currentOrder = this.currentOrder + this.displayMultipleItems < this._getItems().length
-                                    ? this.currentOrder + 1 : 0
+                        ? this.currentOrder + 1 : 0
                 }
                 this._animateViewport(this.currentOrder, 'autoplay', this.circularEnabled ? 1 : 0)
                 this._scheduleTimeoutObj = setTimeout(frameFunc, this.interval)
@@ -215,7 +232,7 @@ export default {
 
             this._scheduleTimeoutObj = setTimeout(frameFunc, this.interval)
         },
-        _animateViewport(position, source, direction){
+        _animateViewport(position, source, direction) {
             this._cancelViewportAnimation()
             const duration = this.duration
             const itemCount = this._getItems().length
@@ -242,13 +259,13 @@ export default {
                 endTime: Date.now() + duration,
                 source
             }
-            console.log(fromPos,this._animating)
+            console.log(fromPos, this._animating)
             if (!this._requestedAnimation) {
                 this._requestedAnimation = true
                 requestAnimationFrame(this._animateFrameFunc.bind(this))
             }
         },
-        _animateFrameFunc (){
+        _animateFrameFunc() {
             if (!this._animating) {
                 this._requestedAnimation = false
                 return
@@ -279,34 +296,34 @@ export default {
             let delta
             const elapsed = Date.now() - startTime
             switch (this.easingFunction) {
-                case 'easeInCubic':
-                    {
-                        delta = tweenFunctions.easeInCubic(elapsed, fromPos, toPos, this.duration)
-                        break
-                    }
-                case 'easeOutCubic':
-                    {
-                        delta = tweenFunctions.easeOutCubic(elapsed, fromPos, toPos, this.duration)
-                        this.updateSwiper(delta)
-                        break
-                    }
-                case 'easeInOutCubic':
-                    {
-                        delta = tweenFunctions.easeInOutCubic(elapsed, fromPos, toPos, this.duration)
-                        break
-                    }
-                case 'linear':
-                    {
-                        delta = tweenFunctions.linear(elapsed, fromPos, toPos, this.duration)
-                        break
-                    }
-                case 'default':
-                default:
-                    {
-                        const curDist = acc * curDuration * curDuration / 2
-                        delta = toPos + curDist
-                        break
-                    }
+            case 'easeInCubic':
+            {
+                delta = tweenFunctions.easeInCubic(elapsed, fromPos, toPos, this.duration)
+                break
+            }
+            case 'easeOutCubic':
+            {
+                delta = tweenFunctions.easeOutCubic(elapsed, fromPos, toPos, this.duration)
+                this.updateSwiper(delta)
+                break
+            }
+            case 'easeInOutCubic':
+            {
+                delta = tweenFunctions.easeInOutCubic(elapsed, fromPos, toPos, this.duration)
+                break
+            }
+            case 'linear':
+            {
+                delta = tweenFunctions.linear(elapsed, fromPos, toPos, this.duration)
+                break
+            }
+            case 'default':
+            default:
+            {
+                const curDist = acc * curDuration * curDuration / 2
+                delta = toPos + curDist
+                break
+            }
             }
             this.updateSwiper(delta)
             requestAnimationFrame(this._animateFrameFunc.bind(this))
@@ -314,7 +331,7 @@ export default {
         _cancelViewportAnimation() {
             this._animating = null
         },
-        _cancelSchedule(){
+        _cancelSchedule() {
             clearTimeout(this._scheduleTimeoutObj)
             this._scheduleTimeoutObj = null
         },
@@ -332,31 +349,30 @@ export default {
             }
             return roundedValue
         },
-        updateView(moveRate,v){
+        updateView(moveRate, v) {
             // moveRate 为当前手指滑动距离相比于 当前 swiper 的宽度或高度
             // v 为 两次 move 之间移动的速率
 
             // 当前 swiper-item 移动距离的比例位置(0-100)
             let newViewport = this._contentTrackViewport + moveRate
             this._contentTrackSpeed = this._contentTrackSpeed * 0.6 + v * 0.4
-            if(!this.circularEnabled){
+            if (!this.circularEnabled) {
                 // 循环展示
                 if (newViewport < 0 || newViewport > this.viewportMax) {
-                  if (newViewport < 0) newViewport = -this.overflowRate(-newViewport)
-                  // eslint-disable-next-line
+                    if (newViewport < 0) newViewport = -this.overflowRate(-newViewport)
+                    // eslint-disable-next-line
                   else if (newViewport > this.viewportMax) newViewport = this.viewportMax + this.overflowRate(newViewport - this.viewportMax)
-                  this._contentTrackSpeed = 0
+                    this._contentTrackSpeed = 0
                 }
             }
             this.updateSwiper(newViewport)
         },
-        updateSwiper(position){
+        updateSwiper(position) {
             if (
                 Math.floor(this.viewportPosition * 2) !== Math.floor(position * 2) ||
                 Math.ceil(this.viewportPosition * 2) !== Math.ceil(position * 2)
-                ){
-                    if(this.circularEnabled)
-                        this._checkCircularLayout(position)
+            ) {
+                if (this.circularEnabled) { this._checkCircularLayout(position) }
             }
             const x = this.vertical ? '0' : -position * 100 * this.viewportMoveRatio + '%'
             const y = this.vertical ? -position * 100 * this.viewportMoveRatio + '%' : '0'
@@ -369,11 +385,11 @@ export default {
             const _itemsLen = this._getItems().length
             const _scrollPosition = {
                 scrollLeft: this.vertical
-                  ? 0
-                  : position * this.viewportMoveRatio * slideFrame.offsetWidth,
+                    ? 0
+                    : position * this.viewportMoveRatio * slideFrame.offsetWidth,
                 scrollTop: this.vertical
-                  ? position * this.viewportMoveRatio * slideFrame.offsetHeight
-                  : 0,
+                    ? position * this.viewportMoveRatio * slideFrame.offsetHeight
+                    : 0,
                 scrollWidth: (this.vertical ? 1 : _itemsLen) * slideFrame.offsetWidth,
                 scrollHeight: (this.vertical ? _itemsLen : 1) * slideFrame.offsetHeight,
             }
@@ -384,25 +400,23 @@ export default {
             ) {
                 const {source} = this._animating || {}
                 if (source === 'touch' && !this._swiping || !this._transitioning) {
-                  this._scrollPosition = _scrollPosition
-                  return
+                    this._scrollPosition = _scrollPosition
+                    return
                 }
                 const x = _scrollPosition.scrollLeft
                 const y = _scrollPosition.scrollTop
                 let dx = 0
                 let dy = 0
-                 if (!this.vertical) {
-                  dx = this._getTransitionDeltaX(x)
+                if (!this.vertical) {
+                    dx = this._getTransitionDeltaX(x)
                 } else {
-                  dy = this._getTransitionDeltaY(y)
+                    dy = this._getTransitionDeltaY(y)
                 }
-
             }
 
             this._scrollPosition = _scrollPosition
-
         },
-        _getTransitionDeltaX(x){
+        _getTransitionDeltaX(x) {
             const frameWidth = this.$refs.slideFrame.$el.offsetWidth
             const offset = Math.abs(parseInt(this._lastPosX, 10) - parseInt(x, 10))
             if (this._lastPosX !== null && offset > frameWidth || this._transposed) {
@@ -410,14 +424,14 @@ export default {
                 const rearFramePosX = (this._getItems().length - 1) * frameWidth
                 if (this.circularEnabled) {
                 // head -> rear
-                if (Math.sign(this._lastPosX) < 0) {
-                    x = -(frameWidth - (x - rearFramePosX))
-                } else if (Math.sign(this._lastPosX) > 0) {
+                    if (Math.sign(this._lastPosX) < 0) {
+                        x = -(frameWidth - (x - rearFramePosX))
+                    } else if (Math.sign(this._lastPosX) > 0) {
                     // rear -> head
-                    x = rearFramePosX + (frameWidth + x)
-                } else {
+                        x = rearFramePosX + (frameWidth + x)
+                    } else {
                     // ignore 0 case
-                }
+                    }
                 }
             } else if (
                 this.autoplay &&
@@ -433,41 +447,41 @@ export default {
             }
             return x - this._previous * frameWidth
         },
-        _getTransitionDeltaY(y){
+        _getTransitionDeltaY(y) {
             const frameWidth = this.$refs.slideFrame.$el.offsetWidth
             const offset = Math.abs(parseInt(this._lastPosY, 10) - parseInt(y, 10))
             if (this._lastPosY !== null && offset > frameHeight || this._transposed) {
-              this._transposed = true
-              const rearFramePosY = (this._getItems().length - 1) * frameHeight
-              if (this.circularEnabled) {
+                this._transposed = true
+                const rearFramePosY = (this._getItems().length - 1) * frameHeight
+                if (this.circularEnabled) {
                 // head -> rear
-                if (Math.sign(this._lastPosY) < 0) {
-                  y = -(frameHeight - (y - rearFramePosY))
-                } else if (Math.sign(this._lastPosY) > 0) {
-                  // rear -> head
-                  y = rearFramePosY + (frameHeight + y)
-                } else {
-                  // ignore 0 case
+                    if (Math.sign(this._lastPosY) < 0) {
+                        y = -(frameHeight - (y - rearFramePosY))
+                    } else if (Math.sign(this._lastPosY) > 0) {
+                        // rear -> head
+                        y = rearFramePosY + (frameHeight + y)
+                    } else {
+                        // ignore 0 case
+                    }
                 }
-              }
             } else if (
-              this.autoplay &&
+                this.autoplay &&
               this._previous === this._getItems().length - 1 &&
               y <= 0 &&
               (this._lastPosY == null || y > this._lastPosY)
             ) {
-              this._lastPosY = y
-              const delta = frameHeight - Math.abs(y)
-              return delta
+                this._lastPosY = y
+                const delta = frameHeight - Math.abs(y)
+                return delta
             } else {
-              this._lastPosY = y
+                this._lastPosY = y
             }
             return y - this._previous * frameHeight
         },
-        overflowRate (rate) {
+        overflowRate(rate) {
             return 0.5 - 0.25 / (rate + 0.5)
         },
-        _checkCircularLayout(viewportPosition){
+        _checkCircularLayout(viewportPosition) {
             if (this._invalid) return
             const items = this._getItems()
             const itemCount = items.length
@@ -479,19 +493,19 @@ export default {
                 const expectPos2 = expectPos1 + itemCount
                 const expectPos3 = expectPos1 - itemCount
                 const dist1 = Math.max(
-                  viewportPosition - (expectPos1 + 1),
-                  expectPos1 - viewportPositionEnd,
-                  0
+                    viewportPosition - (expectPos1 + 1),
+                    expectPos1 - viewportPositionEnd,
+                    0
                 )
                 const dist2 = Math.max(
-                  viewportPosition - (expectPos2 + 1),
-                  expectPos2 - viewportPositionEnd,
-                  0
+                    viewportPosition - (expectPos2 + 1),
+                    expectPos2 - viewportPositionEnd,
+                    0
                 )
                 const dist3 = Math.max(
-                  viewportPosition - (expectPos3 + 1),
-                  expectPos3 - viewportPositionEnd,
-                  0
+                    viewportPosition - (expectPos3 + 1),
+                    expectPos3 - viewportPositionEnd,
+                    0
                 )
                 const dist = Math.min(dist1, dist2, dist3)
                 const expectPos = [expectPos1, expectPos2, expectPos3][[dist1, dist2, dist3].indexOf(dist)]
@@ -507,14 +521,14 @@ export default {
             item.style.transform = transform
             item._position = position
         },
-        _resetLayout({triggeredBy} = {}){
+        _resetLayout({triggeredBy} = {}) {
             this._cancelSchedule()
             this._cancelViewportAnimation()
             const items = this._getItems()
 
             const slides = this.$refs.slides.$el
             const slideFrame = this.$refs.slideFrame.$el
-            if(this.vertical){
+            if (this.vertical) {
 
             } else {
                 if (this.marginSpecified) {
@@ -527,7 +541,7 @@ export default {
                 slideFrame.style.width = Math.abs(100 / this.displayMultipleItems) + '%'
             }
 
-            let itemPos = []
+            const itemPos = []
             for (let i = 0; i < items.length; i++) {
                 if (this._skipHiddenItemLayoutModified) {
                     // TODO: 先不处理这块
@@ -536,7 +550,7 @@ export default {
                 this._updateItemPos(i, i)
             }
 
-             // HACK 兼容以前开发者直接改 item width 的情况
+            // HACK 兼容以前开发者直接改 item width 的情况
             this._viewportMoveRatio = 1
             if (this.displayMultipleItems === 1 && items.length) {
                 const rect = items[0].$el.getBoundingClientRect()
@@ -551,9 +565,9 @@ export default {
             const oldPosition = this._viewportPosition
             this._viewportPosition = -2
             const position = this.currentOrder
-            if(position >= 0){
+            if (position >= 0) {
                 this._invalid = false
-                if(this._contentTrackT){
+                if (this._contentTrackT) {
                     this.updateSwiper(oldPosition + position - this._contentTrackViewport)
                     this._contentTrackViewport = position
                 } else {
@@ -566,14 +580,5 @@ export default {
         }
 
     },
-    mounted(){
-        if(!ismp){
-            this.$refs.slidesWrapper.$el.addEventListener('touchstart', this.handleStart,false)
-            this.$refs.slidesWrapper.$el.addEventListener('touchmove', this.handleMove,false)
-            this.$refs.slidesWrapper.$el.addEventListener('touchend', this.handleEnd,false)
-            this._resetLayout()
-        }
-        
-    }
 }
 </script>
