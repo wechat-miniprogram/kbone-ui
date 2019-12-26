@@ -1,11 +1,15 @@
 <template>
   <KView
     ref="slidesWrapper"
-    class="weui-swiper weui-swiper-wrapper">
+    class="weui-swiper weui-swiper-wrapper"
+    @touchstart="handleStart"
+    @touchmove="handleMove"
+    @touchend="handleEnd">
     <KView
       ref="slides"
       class="weui-swiper-slides">
       <KView
+        id="slideFrame"
         ref="slideFrame"
         class="weui-swiper-slide-frame">
         <slot/>
@@ -106,10 +110,10 @@ export default {
                 ddy: 0
             },
             currentOrder: this.current,
-            _contentTrackViewport: 0,
+            contentTrackViewport: 0,
             viewportPosition: 0,
-            _contentTrackT: 0,
-            _contentTrackSpeed: 0,
+            contentTrackT: 0,
+            contentTrackSpeed: 0,
             multipleItems: 1,
             marginSpecified: false,
             viewportMoveRatio: 1,
@@ -122,8 +126,16 @@ export default {
             this.$refs.slidesWrapper.$el.addEventListener('touchstart', this.handleStart, false)
             this.$refs.slidesWrapper.$el.addEventListener('touchmove', this.handleMove, false)
             this.$refs.slidesWrapper.$el.addEventListener('touchend', this.handleEnd, false)
-            this._resetLayout()
+        } else {
+            this.$refs.slideFrame.$el = document.querySelector('#slideFrame')
+            document.querySelector('#slideFrame').$$getBoundingClientRect()
+                .then(res => {
+                    this.$refs.slideFrame.$el.offsetWidth = res.width
+                    this.$refs.slideFrame.$el.offsetHeight = res.height
+                })
+                .catch({})
         }
+        this._resetLayout()
     },
     methods: {
         _getItems() {
@@ -141,14 +153,14 @@ export default {
                 preX: event.clientX,
                 preY: event.clientY,
             }
-            this._contentTrackViewport = this.viewportPosition
-            this._contentTrackT = Date.now()
-            this._contentTrackSpeed = 0
+            this.contentTrackViewport = this.viewportPosition
+            this.contentTrackT = Date.now()
+            this.contentTrackSpeed = 0
         },
         handleMove(event) {
             // TODO 解决当出现 scroll-view 和 swiper 嵌套时出现诡异滑动的异常点
 
-            if (!this._contentTrackT) return
+            if (!this.contentTrackT) return
             if (event.type === 'touchmove') {
                 event.clientY = event.touches[0].clientY
                 event.clientX = event.touches[0].clientX
@@ -166,15 +178,15 @@ export default {
             this.start.preX = event.clientX
             this.start.preY = event.clientY
 
-            const prevT = this._contentTrackT
-            this._contentTrackT = Date.now()
+            const prevT = this.contentTrackT
+            this.contentTrackT = Date.now()
             const count = this._getItems().length
             this.viewportMax = count - this.multipleItems // 默认先只支持一个 swiper 内显示一个 item 内容
-            let deltaT = this._contentTrackT - prevT
+            let deltaT = this.contentTrackT - prevT
             if (deltaT === 0) deltaT = 1
 
             if (this.vertical) {
-
+                //
             } else {
                 // 先只管水平运行
                 this.updateView(
@@ -185,24 +197,26 @@ export default {
         },
         handleEnd(event) {
             if (this.autoplay) this._scheduleAutoplay()
-            this._contentTrackT = false
+            this.contentTrackT = false
             let direction
-            if (this._contentTrackSpeed === 0) {
+            if (this.contentTrackSpeed === 0) {
                 direction = 0
             } else {
-                direction = this._contentTrackSpeed / Math.abs(this._contentTrackSpeed)
+                direction = this.contentTrackSpeed / Math.abs(this.contentTrackSpeed)
             }
 
             let extraMovement = 0
             //  if (!isCancel && Math.abs(this._contentTrackSpeed) > 0.2) {
-            if (Math.abs(this._contentTrackSpeed) > 0.2) {
+            if (Math.abs(this.contentTrackSpeed) > 0.2) {
                 extraMovement = 0.5 * direction
             }
             const toPos = this._normalizeCurrentValue(this.viewportPosition + extraMovement)
             // if (isCancel) {
-            if (false) {
+            // if (false) {
+            const _temp = false
+            if (_temp) {
                 // TODO: 处理 touchcancel 事件
-                this.updateSwiper(this._contentTrackViewport)
+                this.updateSwiper(this.contentTrackViewport)
             } else if (this.current !== toPos) {
                 this._currentChangeSource = 'touch'
                 this.currentOrder = toPos
@@ -259,10 +273,10 @@ export default {
                 endTime: Date.now() + duration,
                 source
             }
-            console.log(fromPos, this._animating)
             if (!this._requestedAnimation) {
                 this._requestedAnimation = true
-                requestAnimationFrame(this._animateFrameFunc.bind(this))
+                if (ismp) window.requestAnimationFrame(this._animateFrameFunc.bind(this))
+                else requestAnimationFrame(this._animateFrameFunc.bind(this))
             }
         },
         _animateFrameFunc() {
@@ -326,7 +340,8 @@ export default {
             }
             }
             this.updateSwiper(delta)
-            requestAnimationFrame(this._animateFrameFunc.bind(this))
+            if (ismp) window.requestAnimationFrame(this._animateFrameFunc.bind(this))
+            else requestAnimationFrame(this._animateFrameFunc.bind(this))
         },
         _cancelViewportAnimation() {
             this._animating = null
@@ -354,15 +369,15 @@ export default {
             // v 为 两次 move 之间移动的速率
 
             // 当前 swiper-item 移动距离的比例位置(0-100)
-            let newViewport = this._contentTrackViewport + moveRate
-            this._contentTrackSpeed = this._contentTrackSpeed * 0.6 + v * 0.4
+            let newViewport = this.contentTrackViewport + moveRate
+            this.contentTrackSpeed = this.contentTrackSpeed * 0.6 + v * 0.4
             if (!this.circularEnabled) {
                 // 循环展示
                 if (newViewport < 0 || newViewport > this.viewportMax) {
                     if (newViewport < 0) newViewport = -this.overflowRate(-newViewport)
                     // eslint-disable-next-line
                   else if (newViewport > this.viewportMax) newViewport = this.viewportMax + this.overflowRate(newViewport - this.viewportMax)
-                    this._contentTrackSpeed = 0
+                    this.contentTrackSpeed = 0
                 }
             }
             this.updateSwiper(newViewport)
@@ -448,7 +463,8 @@ export default {
             return x - this._previous * frameWidth
         },
         _getTransitionDeltaY(y) {
-            const frameWidth = this.$refs.slideFrame.$el.offsetWidth
+            // const frameWidth = this.$refs.slideFrame.$el.offsetWidth
+            const frameHeight = this.$refs.slideFrame.$el.offsetHeight
             const offset = Math.abs(parseInt(this._lastPosY, 10) - parseInt(y, 10))
             if (this._lastPosY !== null && offset > frameHeight || this._transposed) {
                 this._transposed = true
@@ -529,7 +545,7 @@ export default {
             const slides = this.$refs.slides.$el
             const slideFrame = this.$refs.slideFrame.$el
             if (this.vertical) {
-
+                //
             } else {
                 if (this.marginSpecified) {
                     slides.style.top = 0
@@ -567,9 +583,9 @@ export default {
             const position = this.currentOrder
             if (position >= 0) {
                 this._invalid = false
-                if (this._contentTrackT) {
-                    this.updateSwiper(oldPosition + position - this._contentTrackViewport)
-                    this._contentTrackViewport = position
+                if (this.contentTrackT) {
+                    this.updateSwiper(oldPosition + position - this.contentTrackViewport)
+                    this.contentTrackViewport = position
                 } else {
                     this.updateSwiper(position)
                 }
