@@ -29,6 +29,7 @@ import {
     KSwiper,
     KSwiperItem
 } from '../packages/KSwiper/'
+import KDrawer from '../packages/KDrawer/'
 
 const components = [
     KView,
@@ -53,6 +54,7 @@ const components = [
     KPickerViewColumn,
     KSwiper,
     KSwiperItem,
+    KDrawer
 ]
 
 const install = function(Vue, opts = {}) {
@@ -99,4 +101,5 @@ export default {
     KPickerViewColumn,
     KSwiper,
     KSwiperItem,
+    KDrawer
 }

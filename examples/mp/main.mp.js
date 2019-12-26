@@ -17,6 +17,7 @@ import Progress from '../view/components/progress/progress.vue'
 import Picker from '../view/components/picker/picker.vue'
 import Toptips from '../view/components/toptips/toptips.vue'
 import Swiper from '../view/components/swiper/swiper.vue'
+import Drawer from '../view/components/drawer/drawer.vue'
 
 import routeConfig from '../router/routeConfig'
 
@@ -85,6 +86,11 @@ const router = new Router({
             path: routeConfig.pages.swiper,
             name: 'Swiper',
             component: Swiper
+        },
+        {
+            path: routeConfig.pages.drawer,
+            name: 'Drawer',
+            component: Drawer
         }
     ]
 })

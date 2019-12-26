@@ -100,6 +100,10 @@ export default Vue.extend({
                         {
                             text: 'Swiper',
                             link: '/swiper'
+                        },
+                        {
+                            text: 'Drawer',
+                            link: '/drawer'
                         }
                     ]
                 },

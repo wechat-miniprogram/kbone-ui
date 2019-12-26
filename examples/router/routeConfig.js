@@ -11,6 +11,7 @@ export default {
         progress: '/progress',
         toptips: '/toptips',
         picker: '/picker',
-        swiper: '/swiper'
+        swiper: '/swiper',
+        drawer: '/drawer'
     }
 }
