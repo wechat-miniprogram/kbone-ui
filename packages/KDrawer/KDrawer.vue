@@ -1,25 +1,23 @@
 <template>
-  <transition
-    name="k-drawer"
-    @after-enter="afterEnter"
-    @after-leave="afterLeave">
-    <div
+  <KView
+    name="k-drawer">
+    <KView
       v-show="visible"
       class="kb-drawer__main">
-      <div
+      <KView
         :class="'kb-drawer__wrapper'+(visible && ' kb-drawer__open')"
         @click.self="handleWrapperClick">
-        <div
+        <KView
           :class="direction"
           :style="`width: ${size}`"
           class="kb-drawer">
           <section>
             <slot />
           </section>
-        </div>
-      </div>
-    </div>
-  </transition>
+        </KView>
+      </KView>
+    </KView>
+  </KView>
 </template>
 
 <style lang="less">
@@ -27,11 +25,11 @@
 .kb-drawer__wrapper { position: relative; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: rgba(200, 200, 200, .7); }
 .kb-drawer { position: absolute; display: flex; flex-direction: column; overflow: hidden; padding: 20px; background: #FFFFFF; }
 @keyframes rtl-drawer-in { 0% { transform: translate(100%) } to { transform:translate(0) } }
-// @keyframes rtl-drawer-out { 0% { transform: translate(0) } to { transform:translate(100%) } }
+@keyframes rtl-drawer-out { 0% { transform: translate(0) } to { transform:translate(100%) } }
 @keyframes ltr-drawer-in { 0% { transform: translate(-100%) } to { transform:translate(0) } }
-// @keyframes ltr-drawer-out { 0% { transform: translate(0) } to { transform:translate(-100%) } }
-// .kb-drawer.rtl { animation: rtl-drawer-out .3s 1ms; }
-// .kb-drawer.ltr { animation: ltr-drawer-out .3s 1ms; }
+@keyframes ltr-drawer-out { 0% { transform: translate(0) } to { transform:translate(-100%) } }
+.kb-drawer.rtl { animation: rtl-drawer-out .3s; }
+.kb-drawer.ltr { animation: ltr-drawer-out .3s; }
 .kb-drawer__open .kb-drawer.rtl { animation: rtl-drawer-in .3s; }
 .kb-drawer__open .kb-drawer.ltr { animation: ltr-drawer-in .3s; }
 .kb-drawer.rtl, .kb-drawer.ltr { height: 100%; top: 0; bottom: 0; }
@@ -40,8 +38,13 @@
 </style>
 
 <script>
+import KView from '../KView/'
+
 export default {
     name: 'KDrawer',
+    components: {
+        KView
+    },
     props: {
         /** 是否显示 */
         visible: {
@@ -91,14 +94,6 @@ export default {
         }
     },
     methods: {
-        /** 通知打开完毕 */
-        afterEnter() {
-            this.$emit('opened')
-        },
-        /** 通知关闭完毕 */
-        afterLeave() {
-            this.$emit('closed')
-        },
         hide() {
             this.$emit('update:visible', false)
             this.$emit('close')
