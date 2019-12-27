@@ -102,6 +102,7 @@ export default {
                 this.points.shift()
             }
             // 禁掉外部 webview 的滚动
+            event.preventDefault()
             return false
         },
         endHandler(event) {
