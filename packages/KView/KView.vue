@@ -5,6 +5,9 @@
     :hoverStopPropagation="hoverStopPropagation"
     :hoverClass="hoverClass"
     @click="clickHander"
+    @touchstart="touchStartHander"
+    @touchend="touchEndHander"
+    @touchmove="touchMoveHander"
   >
     <slot/>
   </div>
@@ -36,6 +39,15 @@ export default {
     methods: {
         clickHander(event) {
             this.$emit('click', event)
+        },
+        touchStartHander(event) {
+            this.$emit('touchstart', event)
+        },
+        touchEndHander(event) {
+            this.$emit('touchend', event)
+        },
+        touchMoveHander(event) {
+            this.$emit('touchmove', event)
         }
     }
 }

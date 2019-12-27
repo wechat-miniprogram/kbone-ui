@@ -41,7 +41,7 @@ export default {
         },
         buttons: {
             type: Array,
-            default: []
+            default() { return [] }
         },
         onCancel: {
             type: Function,

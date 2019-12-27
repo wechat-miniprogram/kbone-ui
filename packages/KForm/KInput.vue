@@ -114,11 +114,13 @@ export default {
             value: false,
             public: true
         },
-        disabled: {
+        /** 这里重复了，以上面的为准 */
+        /* disabled: {
             type: Boolean,
             value: false,
             public: true
         },
+        */
         confirmHold: {
             type: Boolean,
             value: false,

@@ -11,7 +11,8 @@ export default {
     name: 'KButtonArea',
     props: {
         direction: {
-            direction: 'vertical'
+            type: String,
+            default() { return 'vertical' }
         }
     },
     data() {
