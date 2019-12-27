@@ -76,7 +76,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-    version: '0.5.6',
+    version: '0.5.9',
     ismp,
     install,
     KView,

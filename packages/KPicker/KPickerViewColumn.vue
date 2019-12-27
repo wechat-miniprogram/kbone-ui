@@ -82,7 +82,7 @@ export default {
             this.startTime = +new Date()
         },
         moveHandler(event) {
-            if (!this.start) return
+            if (!this.start) return false
 
             if (event.type === 'touchmove') {
                 event.clientY = event.touches[0].clientY
@@ -101,6 +101,9 @@ export default {
             if (this.points.length > 40) {
                 this.points.shift()
             }
+            // 禁掉外部 webview 的滚动
+            event.preventDefault()
+            return false
         },
         endHandler(event) {
             if (!this.start) return
