@@ -1,5 +1,9 @@
 import { mount } from '@vue/test-utils'
-import { KButton,KButtonArea,KView } from 'kbone-ui'
+import KboneUI from 'kbone-ui'
+
+const {
+    KButton,KButtonArea,KView
+} = KboneUI
 
 test('render ok',()=>{
     const container = {
@@ -18,13 +22,13 @@ test('render ok',()=>{
             </KView>
         `
     }
-    const wrapper = mount(container,{})
+    const wrapper = mount(container)
 
     const defaultTypeBtn = wrapper.find('#default-type');
     const primaryTypeBtn = wrapper.find('#primary-type');
     const warnTypeBtn = wrapper.find('#warn-type');
 
-    expect(defaultTypeBtn.classes()).toEqual(['weui-btn weui-btn_default'])
-    expect(primaryTypeBtn.classes()).toEqual(['weui-btn weui-btn_primary'])
-    expect(warnTypeBtn.classes()).toEqual(['weui-btn weui-btn_warn'])
+    expect(defaultTypeBtn.classes()).toEqual(['weui-btn','weui-btn_default'])
+    expect(primaryTypeBtn.classes()).toEqual(['weui-btn','weui-btn_primary'])
+    expect(warnTypeBtn.classes()).toEqual(['weui-btn','weui-btn_warn'])
 })

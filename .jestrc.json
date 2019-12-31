@@ -7,6 +7,6 @@
     "moduleNameMapper": {
       "^vue$": "vue/dist/vue.common.js",
       "^kbone-ui$": "<rootDir>/src/index.js",
-      "^@utils/(.*)$": "<rootDir>/src/utils"
+      "^@utils/(.*)$": "<rootDir>/src/utils/$1"
     }
   }
