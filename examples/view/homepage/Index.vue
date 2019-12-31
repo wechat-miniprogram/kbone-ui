@@ -78,6 +78,10 @@ export default Vue.extend({
                             link: '/flex'
                         },
                         {
+                            text: 'ScrollView',
+                            link: '/scrollview'
+                        },
+                        {
                             text: 'Progress',
                             link: '/progress'
                         },

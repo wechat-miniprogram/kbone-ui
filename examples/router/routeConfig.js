@@ -2,6 +2,7 @@ export default {
     index: '/',
     pages: {
         flex: '/flex',
+        scrollview: '/scrollview',
         form: '/form',
         slider: '/slider',
         button: '/button',

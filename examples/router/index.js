@@ -6,6 +6,7 @@ import routeConfig from './routeConfig'
 const Home = () => import(/* webpackChunkName: "Home" */ "@/view/homepage/Index.vue")
 const Button = () => import(/* webpackChunkName: "Button" */ '@/view/components/button/button.vue')
 const Flex = () => import(/* webpackChunkName: "Flex" */ '@/view/components/flex/flex.vue')
+const ScrollView = () => import(/* webpackChunkName: "Flex" */ '@/view/components/scrollview/scrollview.vue')
 const Form = () => import(/* webpackChunkName: "Form" */ '@/view/components/form/form.vue')
 const Slider = () => import(/* webpackChunkName: "Slider" */ '@/view/components/form/slider.vue')
 const ActionSheet = () => import(/* webpackChunkName: "ActionSheet" */ '@/view/components/actionsheet/actionsheet.vue')
@@ -36,6 +37,11 @@ export default new Router({
             path: routeConfig.pages.flex,
             name: 'Flex',
             component: Flex
+        },
+        {
+            path: routeConfig.pages.scrollview,
+            name: 'ScrollView',
+            component: ScrollView
         },
         {
             path: routeConfig.pages.form,
