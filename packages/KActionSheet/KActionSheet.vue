@@ -39,7 +39,7 @@ export default {
         actions: {
             type: Array,
             required: true,
-            default: () => []
+            default() { return [] }
         },
         value: {
             type: Boolean,
