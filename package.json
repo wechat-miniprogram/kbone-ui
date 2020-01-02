@@ -9,7 +9,8 @@
     "build:weui": "gulp compile --gulpfile examples/weui/gulpfile.js",
     "build": "cross-env NODE_ENV=production webpack --config build/bin/webpack.common.js --progress --hide-modules",
     "dev": "cross-env NODE_ENV=production webpack --config build/bin/webpack.common.js --progress --hide-modules --watch",
-    "test": "jest --colors --coverage --config .jestrc.json"
+    "test": "jest --colors --coverage --config .jestrc.json",
+    "cov": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,7 @@
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.0",
+    "coveralls": "^3.0.9",
     "cross-env": "^6.0.3",
     "css-loader": "^0.28.0",
     "eslint": "^4.15.0",
