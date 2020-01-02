@@ -11,7 +11,7 @@
 1. 完成代码开发
 2. 补充单元测试
 3. 在包内执行 `npm run test` 确保单元测试没有问题
-4. 在 kbone-ui 根目录执行 `npm run check` 确保代码检查和所有包单元测试正常
+4. 在 kbone-ui 根目录执行 `npm run test` 确保代码检查和所有包单元测试正常
 5. 在包内的 CHANGELOG.md 中补充版本更新日志，具体格式可参考 packages/miniprogram-element/CHANGELOG.md
 6. 如有必要，需要修改 docs 目录下的文档
 7. 提交到 git
@@ -59,8 +59,6 @@
 # 执行单元测试
 npm run test
 
-# 调试单元测试
-npm run test-debug
 
 # 执行覆盖率检查
 npm run coverage

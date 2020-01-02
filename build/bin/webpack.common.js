@@ -27,6 +27,8 @@ module.exports = {
     filename: "[name].js",
     library: "kbone-ui",
     libraryTarget: "umd",
+    umdNamedDefine: true,
+    libraryExport:"default",
     globalObject: 'this'
   },
   module:{

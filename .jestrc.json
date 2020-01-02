@@ -1,0 +1,12 @@
+{
+    "transform": {
+      "\\.js$": "babel-jest",
+      "\\.(vue)$": "vue-jest",
+      "\\.(css|less)$": "<rootDir>/test/utils/css-loader-jest.js"
+    },
+    "moduleNameMapper": {
+      "^vue$": "vue/dist/vue.common.js",
+      "^kbone-ui$": "<rootDir>/src/index.js",
+      "^@utils/(.*)$": "<rootDir>/src/utils/$1"
+    }
+  }
