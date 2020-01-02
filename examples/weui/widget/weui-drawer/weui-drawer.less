@@ -1,0 +1,14 @@
+.weui-drawer__main { position: fixed; left: 0; top: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; z-index: 9999; }
+.weui-drawer__wrapper { position: relative; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: rgba(200, 200, 200, .7); }
+.weui-drawer { position: absolute; display: flex; flex-direction: column; overflow: hidden; padding: 20px; background: #FFFFFF; }
+@keyframes rtl-drawer-in { 0% { transform: translate(100%) } to { transform:translate(0) } }
+@keyframes rtl-drawer-out { 0% { transform: translate(0) } to { transform:translate(100%) } }
+@keyframes ltr-drawer-in { 0% { transform: translate(-100%) } to { transform:translate(0) } }
+@keyframes ltr-drawer-out { 0% { transform: translate(0) } to { transform:translate(-100%) } }
+.weui-drawer.rtl { animation: rtl-drawer-out .3s; }
+.weui-drawer.ltr { animation: ltr-drawer-out .3s; }
+.weui-drawer__open .weui-drawer.rtl { animation: rtl-drawer-in .3s; }
+.weui-drawer__open .weui-drawer.ltr { animation: ltr-drawer-in .3s; }
+.weui-drawer.rtl, .weui-drawer.ltr { height: 100%; top: 0; bottom: 0; }
+.weui-drawer.rtl { right: 0; }
+.weui-drawer.ltr { left: 0; }

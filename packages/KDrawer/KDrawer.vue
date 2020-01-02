@@ -1,16 +1,16 @@
 <template>
   <KView
-    name="k-drawer">
+    name="kb-drawer">
     <KView
       v-show="visible"
-      class="kb-drawer__main">
+      class="weui-drawer__main">
       <KView
-        :class="'kb-drawer__wrapper'+(visible && ' kb-drawer__open')"
+        :class="'weui-drawer__wrapper'+(visible && ' weui-drawer__open')"
         @click.self="handleWrapperClick">
         <KView
           :class="direction"
           :style="`width: ${size}`"
-          class="kb-drawer">
+          class="weui-drawer">
           <section>
             <slot />
           </section>
@@ -19,23 +19,6 @@
     </KView>
   </KView>
 </template>
-
-<style lang="less">
-.kb-drawer__main { position: fixed; left: 0; top: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; z-index: 9999; }
-.kb-drawer__wrapper { position: relative; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: rgba(200, 200, 200, .7); }
-.kb-drawer { position: absolute; display: flex; flex-direction: column; overflow: hidden; padding: 20px; background: #FFFFFF; }
-@keyframes rtl-drawer-in { 0% { transform: translate(100%) } to { transform:translate(0) } }
-@keyframes rtl-drawer-out { 0% { transform: translate(0) } to { transform:translate(100%) } }
-@keyframes ltr-drawer-in { 0% { transform: translate(-100%) } to { transform:translate(0) } }
-@keyframes ltr-drawer-out { 0% { transform: translate(0) } to { transform:translate(-100%) } }
-.kb-drawer.rtl { animation: rtl-drawer-out .3s; }
-.kb-drawer.ltr { animation: ltr-drawer-out .3s; }
-.kb-drawer__open .kb-drawer.rtl { animation: rtl-drawer-in .3s; }
-.kb-drawer__open .kb-drawer.ltr { animation: ltr-drawer-in .3s; }
-.kb-drawer.rtl, .kb-drawer.ltr { height: 100%; top: 0; bottom: 0; }
-.kb-drawer.rtl { right: 0; }
-.kb-drawer.ltr { left: 0; }
-</style>
 
 <script>
 import KView from '../KView/'
