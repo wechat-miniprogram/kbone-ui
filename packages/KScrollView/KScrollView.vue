@@ -12,6 +12,7 @@
         overflowX: scrollX ? 'auto' : 'hidden',
         overflowY: scrollY ? 'auto' : 'hidden',
       }"
+      @scroll="scroll"
     >
       <div
         ref="content"
@@ -40,15 +41,17 @@ export default {
             type: Boolean,
             default: false,
         },
-        // TODO
         upperThreshold: {
             type: String,
             default: '50px',
         },
-        // TODO
         lowerThreshold: {
             type: String,
             default: '50px',
+        },
+        test: {
+            type: String,
+            default: '0px',
         },
         scrollTop: {
             type: String,
@@ -66,18 +69,36 @@ export default {
             type: Boolean,
             default: false,
         },
-        // TODO
+        // TODO 支持这个属性
         scrollAnchoring: {
             type: Boolean,
             default: false,
         },
     },
     watch: {
+        scrollX() {
+            this._upperLowerStatusX = 'initial'
+            this._upperLowerStatusY = 'initial'
+            this._checkUpperLower()
+        },
+        scrollY() {
+            this._upperLowerStatusX = 'initial'
+            this._upperLowerStatusY = 'initial'
+            this._checkUpperLower()
+        },
+        upperThreshold() {
+            this._checkUpperLower()
+        },
+        lowerThreshold() {
+            this._checkUpperLower()
+        },
         scrollTop(pos) {
-            this.$refs.main.scrollTop = pos
+            const posVal = this.convertPosVal(pos)
+            this.scrollTo(posVal, 'y')
         },
         scrollLeft(pos) {
-            this.$refs.main.scrollLeft = pos
+            const posVal = this.convertPosVal(pos)
+            this.scrollTo(posVal, 'x')
         },
         scrollIntoView(id) {
             if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id)) {
@@ -95,84 +116,106 @@ export default {
         },
     },
     methods: {
+        convertPosVal(pos) {
+            if (typeof pos === 'number') return pos
+            const posStr = String(pos)
+            if (/[-.0-9]+(px)?/.test(posStr)) {
+                return parseInt(posStr, 10)
+            }
+            console.error('[KScrollView] scrollTop and scrollLeft only accept px values.')
+        },
         scrollTo(val, direction) {
+            const main = this.$refs.main
+
             if (!this.scrollWithAnimation) {
+                this._animationState = undefined
                 if (direction === 'x') {
-                    this.$refs.main.scrollLeft = val
+                    main.scrollLeft = val
                 } else if (direction === 'y') {
-                    this.$refs.main.scrollTop = val
+                    main.scrollTop = val
                 }
                 return
             }
 
-            const main = this.$refs.main
-
             if (val < 0) {
                 val = 0
-            } else if (direction === 'x' && val > main.scrollWidth - main.offsetWidth) {
-                val = main.scrollWidth - main.offsetWidth
-            } else if (direction === 'y' && val > main.scrollHeight - main.offsetHeight) {
-                val = main.scrollHeight - main.offsetHeight
+            } else if (direction === 'x' && val > main.scrollWidth - main.clientWidth) {
+                val = main.scrollWidth - main.clientWidth
+            } else if (direction === 'y' && val > main.scrollHeight - main.clientHeight) {
+                val = main.scrollHeight - main.clientHeight
             }
 
-            let pos = 0
-            let transform = ''
-
-            if (direction === 'x') {
-                pos = main.scrollLeft - val
-            } else if (direction === 'y') {
-                pos = main.scrollTop - val
+            const dist = val - (direction === 'x' ? main.scrollLeft : main.scrollTop)
+            const animationState = this._animationState = {
+                a: 2 * dist / 90000,
+                endTs: Date.now() + 300,
             }
-
-            if (pos === 0) {
-                return
+            const aniFn = () => {
+                const ts = Date.now()
+                if (this._animationState !== animationState) return
+                if (ts >= animationState.endTs) {
+                    if (direction === 'x') {
+                        main.scrollLeft = val
+                    } else if (direction === 'y') {
+                        main.scrollTop = val
+                    }
+                    this._animationState = undefined
+                } else {
+                    const t = animationState.endTs - ts
+                    const d = 0.5 * animationState.a * t * t
+                    if (direction === 'x') {
+                        main.scrollLeft = val - d
+                    } else if (direction === 'y') {
+                        main.scrollTop = val - d
+                    }
+                    requestAnimationFrame(aniFn)
+                }
             }
-
-            this.$refs.content.style.transition = 'transform .3s ease-out'
-            this.$refs.content.style.webkitTransition = '-webkit-transform .3s ease-out'
-
-            if (direction === 'x') {
-                transform = 'translateX(' + pos + 'px) translateZ(0)'
-            } else if (direction === 'y') {
-                transform = 'translateY(' + pos + 'px) translateZ(0)'
-            }
-
-            this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
-            this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
-            this.__transitionEnd = this._transitionEnd.bind(this, val, direction)
-            this.$refs.content.addEventListener('transitionend', this.__transitionEnd)
-            this.$refs.content.addEventListener('webkitTransitionEnd', this.__transitionEnd)
-
-            if (direction === 'x') {
-                // ios下先hidden会先闪到scrollleft = 0处
-                if (!/iPhone|iPad/.test(navigator.userAgent)) main.style.overflowX = 'hidden'
-            } else if (direction === 'y') {
-                main.style.overflowY = 'hidden'
-            }
-
-            this.$refs.content.style.transform = transform
-            this.$refs.content.style.webkitTransform = transform
+            requestAnimationFrame(aniFn)
         },
-        _transitionEnd(val, direction) {
-            this.$refs.content.style.transition = ''
-            this.$refs.content.style.webkitTransition = ''
-            this.$refs.content.style.transform = ''
-            this.$refs.content.style.webkitTransform = ''
 
+        scroll() {
             const main = this.$refs.main
-
-            if (direction === 'x') {
-                main.style.overflowX = this.scrollX ? 'auto' : 'hidden'
-                main.scrollLeft = val
-            } else if (direction === 'y') {
-                main.style.overflowY = this.scrollY ? 'auto' : 'hidden'
-                main.scrollTop = val
+            const detail = {
+                scrollLeft: main.scrollLeft,
+                scrollTop: main.scrollLeft,
+                scrollHeight: main.scrollHeight,
+                scrollWidth: main.scrollWidth,
             }
-            this.$refs.content.removeEventListener('transitionend', this.__transitionEnd)
-            this.$refs.content.removeEventListener('webkitTransitionEnd', this.__transitionEnd)
+            this.$emit('scroll', {detail})
+            this._checkUpperLower()
         },
-
+        _checkUpperLower() {
+            const main = this.$refs.main
+            if (main.scrollTop <= this.upperThreshold) {
+                if (this._upperLowerStatusY !== 'initial' && this._upperLowerStatusY !== 'upper') {
+                    this.$emit('scrolltoupper')
+                }
+                this._upperLowerStatusY = 'upper'
+            } else if (main.scrollTop >= main.scrollHeight - main.clientHeight - this.lowerThreshold) {
+                if (this._upperLowerStatusY !== 'initial' && this._upperLowerStatusY !== 'lower') {
+                    this.$emit('scrolltolower')
+                }
+                this._upperLowerStatusY = 'lower'
+            } else {
+                this._upperLowerStatusY = 'center'
+            }
+            if (main.scrollLeft <= this.upperThreshold) {
+                if (this._upperLowerStatusX !== 'initial' && this._upperLowerStatusX !== 'upper') {
+                    this.$emit('scrolltoupper')
+                }
+                this._upperLowerStatusX = 'upper'
+            } else if (main.scrollLeft >= main.scrollWidth - main.clientWidth - this.lowerThreshold) {
+                if (this._upperLowerStatusX !== 'initial' && this._upperLowerStatusX !== 'lower') {
+                    this.$emit('scrolltolower')
+                }
+                this._upperLowerStatusX = 'lower'
+            } else {
+                this._upperLowerStatusX = 'center'
+            }
+        },
         touchstart(e) {
+            this._animationState = undefined
             this._x = e.detail.x
             this._y = e.detail.y
             this._noBubble = null
