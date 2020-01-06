@@ -9,6 +9,7 @@ import {
 import {
     KRadio,
     KCells,
+    KCell,
     KCheckbox,
     KCheckboxGroup,
     KRadioGroup,
@@ -21,6 +22,7 @@ import KDialog from '../packages/KDialog/'
 import KToast from '../packages/KToast/'
 import KProgress from '../packages/KProgress/'
 import KToptips from '../packages/KToptips/'
+import KIcon from '../packages/KIcon/'
 import {
     KPickerView,
     KPickerViewColumn,
@@ -38,6 +40,7 @@ const components = [
     KFlexItem,
     KRadio,
     KCells,
+    KCell,
     KCheckbox,
     KCheckboxGroup,
     KSwitch,
@@ -53,6 +56,7 @@ const components = [
     KPickerViewColumn,
     KSwiper,
     KSwiperItem,
+    KIcon,
 ]
 
 const install = function(Vue, opts = {}) {
@@ -84,6 +88,7 @@ export default {
     KFlexItem,
     KRadio,
     KCells,
+    KCell,
     KCheckbox,
     KCheckboxGroup,
     KSwitch,
@@ -99,4 +104,5 @@ export default {
     KPickerViewColumn,
     KSwiper,
     KSwiperItem,
+    KIcon,
 }

@@ -7,6 +7,10 @@
     <KView class="page__bd page__bd_spacing">
       <KSwiper
         :indicator-dots="indicatorDots"
+        :circular="circularFlag"
+        :autoplay="autoplay"
+        :duration="duration"
+        :interval="interval"
       >
         <KSwiperItem
           v-for="(item,index) in background"
@@ -14,6 +18,54 @@
           <KView :class="'swiper-item '+ item"/>
         </KSwiperItem>
       </KSwiper>
+    </KView>
+    <KView>
+      <KCells>
+        <KSwitch
+          v-model="indicatorDots"
+          label="指示点"
+        />
+        <KSwitch
+          v-model="circularFlag"
+          label="衔接滑动"
+        />
+        <KSwitch
+          v-model="autoplay"
+          label="自动播放"
+        />
+      </KCells>
+    </KView>
+    <KView
+      style="margin-top:20px"
+      class="page__bd page__bd_spacing">
+      <KFlex>
+        <KFlexItem>
+          幻灯片切换时长
+        </KFlexItem>
+        <KFlexItem>
+          {{ duration }}ms
+        </KFlexItem>
+      </KFlex>
+      <KSlider
+        :min="500"
+        :max="2000"
+        v-model="duration"
+      />
+    </KView>
+    <KView class="page__bd page__bd_spacing">
+      <KFlex>
+        <KFlexItem>
+          自动播放间隔时长
+        </KFlexItem>
+        <KFlexItem>
+          {{ interval }}ms
+        </KFlexItem>
+      </KFlex>
+      <KSlider
+        :min="2000"
+        :max="10000"
+        v-model="interval"
+      />
     </KView>
   </KView>
 </template>
@@ -23,6 +75,12 @@ export default {
         return {
             background: ['demo-text-1', 'demo-text-2', 'demo-text-3'],
             indicatorDots: false,
+            circularFlag: false,
+            autoplay: true,
+            vertical: false,
+            pointer: false,
+            duration: 500,
+            interval: 2000
         }
     }
 }

@@ -15,6 +15,7 @@ const Progress = () => import(/* webpackChunkName: "progress" */ '@/view/compone
 const Toptips = () => import(/* webpackChunkName: "Topstips" */ '@/view/components/toptips/toptips.vue')
 const Picker = () => import(/* webpackChunkName: "Picker" */ '@/view/components/picker/picker.vue')
 const Swiper = () => import(/* webpackChunkName: "Swiper" */ '@/view/components/swiper/swiper.vue')
+const Cells = () => import(/* webpackChunkName: "Cells" */ '@/view/components/cells/cells.vue')
 
 
 Vue.use(Router)
@@ -81,6 +82,11 @@ export default new Router({
             path: routeConfig.pages.swiper,
             name: 'Swiper',
             component: Swiper
+        },
+        {
+            path: routeConfig.pages.cells,
+            name: 'Cells',
+            component: Cells
         }
     ]
 })

@@ -65,6 +65,10 @@ export default Vue.extend({
                         {
                             text: 'Form',
                             link: '/form'
+                        },
+                        {
+                            text: 'Cells',
+                            link: '/cells'
                         }
                     ]
                 },
@@ -85,7 +89,6 @@ export default Vue.extend({
                             text: 'Slider',
                             link: '/slider'
                         },
-
                     ]
                 },
                 {

@@ -1,10 +1,14 @@
 <template>
+  <wx-swiper 
+    v-if="ismp"
+
+    >
+      <slot></slot>
+  </wx-swiper>
   <KView
+    v-else
     ref="slidesWrapper"
-    class="weui-swiper weui-swiper-wrapper"
-    @touchstart="handleStart"
-    @touchmove="handleMove"
-    @touchend="handleEnd">
+    class="weui-swiper weui-swiper-wrapper">
     <KView
       ref="slides"
       class="weui-swiper-slides">
@@ -18,7 +22,14 @@
     <KView
       v-if="indicatorDots"
       ref="slidesDots"
-      class="weui-swiper-dots"/>
+      class="weui-swiper-dots weui-swiper-dots-horizontal">
+        <KView v-for="(item,index) in itemsLength" 
+        class="weui-swiper-dot"
+        :class="{
+            'weui-swiper-dot-active': currentOrder === index
+        }"
+        :key="index" />
+    </KView>
   </KView>
 </template>
 
@@ -50,7 +61,7 @@ export default {
         },
         interval: {
             type: Number,
-            default: 5000,
+            default: 2000,
         },
         duration: {
             type: Number,
@@ -117,25 +128,54 @@ export default {
             multipleItems: 1,
             marginSpecified: false,
             viewportMoveRatio: 1,
-            circularEnabled: false, // 循环展示 flag
+            circularEnabled: this.circular, // 循环展示 flag
             ismp,
+        }
+    },
+    watch:{
+        circular(){
+            this.circularEnabled = this.circular
+            this._resetLayout()
+        },
+        autoplay(){
+            if(this.autoplay){
+                this._scheduleAutoplay()
+            }else{
+                this._cancelSchedule()
+            }
+        },
+        currentOrder(newValue,oldValue){
+            if(newValue !== oldValue){
+                this.$emit('change',newValue)
+            }
+        }
+    },
+    computed:{
+        itemsLength(){
+            return this._getItems().length
         }
     },
     mounted() {
         if (!ismp) {
             this.$refs.slidesWrapper.$el.addEventListener('touchstart', this.handleStart, false)
+            this.$refs.slidesWrapper.$el.addEventListener('mousedown', this.handleStart, false)
             this.$refs.slidesWrapper.$el.addEventListener('touchmove', this.handleMove, false)
+            this.$refs.slidesWrapper.$el.addEventListener('mousemove', this.handleMove, false)
             this.$refs.slidesWrapper.$el.addEventListener('touchend', this.handleEnd, false)
-        } else {
-            this.$refs.slideFrame.$el = document.querySelector('#slideFrame')
-            document.querySelector('#slideFrame').$$getBoundingClientRect()
-                .then(res => {
-                    this.$refs.slideFrame.$el.offsetWidth = res.width
-                    this.$refs.slideFrame.$el.offsetHeight = res.height
-                })
-                .catch({})
+            this.$refs.slidesWrapper.$el.addEventListener('mouseup', this.handleEnd, false)
+            this._resetLayout()
         }
-        this._resetLayout()
+    },
+    beforeDestroy(){
+        if(!ismp) {
+            this.$refs.slidesWrapper.$el.removeEventListener('touchstart',this.handleStart, false) 
+            this.$refs.slidesWrapper.$el.removeEventListener('touchmove', this.handleMove, false)
+            this.$refs.slidesWrapper.$el.removeEventListener('touchend', this.handleEnd, false)
+            this.$refs.slidesWrapper.$el.removeEventListener('mousedown', this.handleStart, false)
+            this.$refs.slidesWrapper.$el.removeEventListener('mousemove', this.handleMove, false)
+            this.$refs.slidesWrapper.$el.removeEventListener('mouseup', this.handleEnd, false)
+            this._cancelSchedule()
+        }
     },
     methods: {
         _getItems() {
@@ -180,7 +220,7 @@ export default {
 
             const prevT = this.contentTrackT
             this.contentTrackT = Date.now()
-            const count = this._getItems().length
+            const count = this.itemsLength
             this.viewportMax = count - this.multipleItems // 默认先只支持一个 swiper 内显示一个 item 内容
             let deltaT = this.contentTrackT - prevT
             if (deltaT === 0) deltaT = 1
@@ -227,7 +267,7 @@ export default {
         },
         _scheduleAutoplay() {
             this._cancelSchedule()
-            if (this._getItems().length <= this.displayMultipleItems) {
+            if (this.itemsLength <= this.displayMultipleItems) {
                 return
             }
             const frameFunc = () => {
@@ -237,7 +277,7 @@ export default {
                     this.currentOrder = this._normalizeCurrentValue(this.currentOrder + 1)
                 } else {
                     // 到底部，默认返回 0 位置
-                    this.currentOrder = this.currentOrder + this.displayMultipleItems < this._getItems().length
+                    this.currentOrder = this.currentOrder + this.displayMultipleItems < this.itemsLength
                         ? this.currentOrder + 1 : 0
                 }
                 this._animateViewport(this.currentOrder, 'autoplay', this.circularEnabled ? 1 : 0)
@@ -249,7 +289,7 @@ export default {
         _animateViewport(position, source, direction) {
             this._cancelViewportAnimation()
             const duration = this.duration
-            const itemCount = this._getItems().length
+            const itemCount = this.itemsLength
             let fromPos = this.viewportPosition
             if (this.circularEnabled) {
                 if (direction < 0) {
@@ -351,7 +391,7 @@ export default {
             this._scheduleTimeoutObj = null
         },
         _normalizeCurrentValue(val) {
-            const itemCount = this._getItems().length
+            const itemCount = this.itemsLength
             if (!itemCount) return -1
             // eslint-disable-next-line
             const roundedValue = (Math.round(val) % itemCount + itemCount) % itemCount
@@ -397,7 +437,7 @@ export default {
             slideFrame.style.transform = transform
             this.viewportPosition = position
 
-            const _itemsLen = this._getItems().length
+            const _itemsLen = this.itemsLength
             const _scrollPosition = {
                 scrollLeft: this.vertical
                     ? 0
@@ -436,7 +476,7 @@ export default {
             const offset = Math.abs(parseInt(this._lastPosX, 10) - parseInt(x, 10))
             if (this._lastPosX !== null && offset > frameWidth || this._transposed) {
                 this._transposed = true
-                const rearFramePosX = (this._getItems().length - 1) * frameWidth
+                const rearFramePosX = (this.itemsLength - 1) * frameWidth
                 if (this.circularEnabled) {
                 // head -> rear
                     if (Math.sign(this._lastPosX) < 0) {
@@ -450,7 +490,7 @@ export default {
                 }
             } else if (
                 this.autoplay &&
-                this._previous === this._getItems().length - 1 &&
+                this._previous === this.itemsLength - 1 &&
                 x <= 0 &&
                 (this._lastPosX == null || x > this._lastPosX)
             ) {
@@ -468,7 +508,7 @@ export default {
             const offset = Math.abs(parseInt(this._lastPosY, 10) - parseInt(y, 10))
             if (this._lastPosY !== null && offset > frameHeight || this._transposed) {
                 this._transposed = true
-                const rearFramePosY = (this._getItems().length - 1) * frameHeight
+                const rearFramePosY = (this.itemsLength - 1) * frameHeight
                 if (this.circularEnabled) {
                 // head -> rear
                     if (Math.sign(this._lastPosY) < 0) {
@@ -482,7 +522,7 @@ export default {
                 }
             } else if (
                 this.autoplay &&
-              this._previous === this._getItems().length - 1 &&
+              this._previous === this.itemsLength - 1 &&
               y <= 0 &&
               (this._lastPosY == null || y > this._lastPosY)
             ) {
@@ -567,19 +607,19 @@ export default {
             }
 
             // HACK 兼容以前开发者直接改 item width 的情况
-            this._viewportMoveRatio = 1
+            this.viewportMoveRatio = 1
             if (this.displayMultipleItems === 1 && items.length) {
                 const rect = items[0].$el.getBoundingClientRect()
                 const baseRect = this.$refs.slideFrame.$el.getBoundingClientRect()
-                this._viewportMoveRatio = rect.width / baseRect.width
-                if (!(this._viewportMoveRatio > 0 && this._viewportMoveRatio < 1)) {
-                    this._viewportMoveRatio = 1
+                this.viewportMoveRatio = rect.width / baseRect.width
+                if (!(this.viewportMoveRatio > 0 && this.viewportMoveRatio < 1)) {
+                    this.viewportMoveRatio = 1
                 }
             }
 
-            this._circularEnabled = this.circular && items.length > this.displayMultipleItems
-            const oldPosition = this._viewportPosition
-            this._viewportPosition = -2
+            this.circularEnabled = this.circular && items.length > this.displayMultipleItems
+            const oldPosition = this.viewportPosition
+            this.viewportPosition = -2
             const position = this.currentOrder
             if (position >= 0) {
                 this._invalid = false
@@ -589,6 +629,7 @@ export default {
                 } else {
                     this.updateSwiper(position)
                 }
+                if(this.autoplay) this._scheduleAutoplay()
             }
 
             // 更新一下 dots 内容

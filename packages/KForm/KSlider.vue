@@ -1,27 +1,25 @@
 <template>
-  <KView
-    v-if="!ismp"
-    class="weui-slider-box" >
-    <KView class="weui-slider">
-      <KView
-        ref="trackbar"
-        class="weui-slider__inner" >
+  <KView v-if="!ismp" class="weui-slider-box">
+    <KView class="weui-slider-tap-area" ref="wrapper">
+      <KView ref="trackbar" class="weui-slider-handle-wrapper">
         <KView
-          :style="{width: stopPosition + '%'}"
-          class="weui-slider__track" />
-        <KView
-          :style="{left: stopPosition + '%'}"
-          class="weui-slider__handler"
-          @mouseenter.native="handleMouseEnter"
-          @mouseleave.native="handleMouseLeave"
-          @mousedown.native="onButtonDown"
-          @touchstart.native="onButtonDown"
+          :style="{left: getValueWidth(filteredValue,min,max)}"
+          class="weui-slider-handle"
+          ref="handle"
         />
+        <KView class="weui-slider-thumb" :style="{
+                width: getBlockSize(blockSize) + 'px',
+                height: getBlockSize(blockSize) + 'px',
+                'margin-left': '-' + getBlockSize(blockSize/2) + 'px',
+                'margin-top': '-' + getBlockSize(blockSize/2) + 'px',
+                left: getValueWidth(filteredValue,min,max),
+                'background-color': blockColor
+            }"></KView>
+        <KView :style="{width: getValueWidth(filteredValue,min,max)}" class="weui-slider-track" />
+        <KView class="weui-slider-step" ref="step"></KView>
       </KView>
     </KView>
-    <KView
-      v-if="showValue"
-      class="weui-slider-box__value">{{ stopPosition }}</KView>
+    <KView v-if="showValue" class="weui-slider-value">{{ filteredValue }}</KView>
   </KView>
   <wx-slider
     v-else
@@ -32,143 +30,202 @@
     :disabled="disabled"
     :step="step"
     @change="sliderChange"
-    @changing="sliderChanging" />
+    @changing="sliderChanging"
+  />
 </template>
 
 <script>
-import {ismp} from '@utils/util'
+import {
+    ismp,
+    isDecimals,
+    calcNumberOfDecimals, 
+    getLimitNumber
+} from "@utils/util";
 
 export default {
-    name: 'KSlider',
-    props: {
-        showValue: {
-            type: Boolean
-        },
-        value: {
-            type: Number
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        step: {
-            type: Number,
-            default: 1
-        },
-        min: {
-            type: Number,
-            default: 0
-        },
-        max: {
-            type: Number,
-            default: 100
+  name: "KSlider",
+  props: {
+    showValue: {
+      type: Boolean
+    },
+    value: {
+      type: Number,
+      default: 0
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    step: {
+      type: Number,
+      default: 1
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: 100
+    },
+    blockSize: {
+      type: Number,
+      default: 28
+    },
+    backgroundColor: {
+        type: String,
+        default: '#E9E9E9'
+    },
+    blockColor: {
+        type: String,
+        default: '#FFFFFF'
+    }
+  },
+  data() {
+    return {
+      startPosition: undefined,
+      currentValue: this.value,
+      filteredValue: 0,
+      startX: 0,
+      sliderSize: 1,
+      newPosition: 0,
+      ismp
+    };
+  },
+  computed: {},
+  watch: {
+    currentValue() {
+      this.revalicateRange();
+    }
+  },
+  mounted() {
+    if (!ismp) {
+      const handle = this.$refs.handle.$el;
+      this.revalicateRange()
+      handle.addEventListener("touchstart", this.onDragStart, false);
+      handle.addEventListener("mousedown", this.onDragStart, false);
+      handle.addEventListener("touchmove", this.onDragging, false);
+      handle.addEventListener("mousemove", this.onDragging, false);
+      handle.addEventListener("touchend", this.onDragEnd, false);
+      handle.addEventListener("mouseup", this.onDragEnd, false);
+    }
+  },
+  beforeDestroy() {
+    if (!ismp) {
+      const handle = this.$refs.handle.$el;
+      handle.removeEventListener("touchstart", this.onDragStart, false);
+      handle.removeEventListener("mousedown", this.onDragStart, false);
+      handle.removeEventListener("touchmove", this.onDragging, false);
+      handle.removeEventListener("mousemove", this.onDragging, false);
+      handle.removeEventListener("touchend", this.onDragEnd, false);
+      handle.removeEventListener("mouseup", this.onDragEnd, false);
+    }
+  },
+  methods: {
+    onDragStart(event) {
+      if (this.disabled) return;
+      this.dragging = true;
+      if (event.type === "touchstart") {
+        event.clientY = event.touches[0].clientY;
+        event.clientX = event.touches[0].clientX;
+      }
+      this.startPosition = this.currentValue;
+    },
+    onDragging(event) {
+      if (this.dragging) {
+        if (event.type === "touchmove") {
+          event.clientY = event.touches[0].clientY;
+          event.clientX = event.touches[0].clientX;
         }
+
+        this.updateHandle(event);
+        this.$emit("changing", event);
+      }
     },
-    data() {
-        return {
-            startPosition: 0,
-            startX: 0,
-            sliderSize: 1,
-            newPosition: 0,
-            stopPosition: this.value || 0,
-            ismp
+    onDragEnd(event) {
+      if (this.dragging) {
+        this.dragging = false;
+        if (event.type === "touchend") {
+          event.clientY = event.changedTouches[0].clientY;
+          event.clientX = event.changedTouches[0].clientX;
         }
+
+        this.updateHandle(event);
+        this.$emit("change", event);
+        this.startPosition = undefined;
+      }
     },
-    computed: {
-    // 计算实际比例
-    // currentPosition() {
-    //   return `${((this.stopPosition - this.min) / (this.max - this.min)) *
-    //     100}%`;
-    // },
-        currentPercentage() {
-            return (this.stopPosition - this.min) / (this.max - this.min)
-        },
-        precision() {
-            const precisions = [this.min, this.max, this.step].map(item => {
-                const decimal = ('' + item).split('.')[1]
-                return decimal ? decimal.length : 0
-            })
-            return Math.max.apply(null, precisions)
+    updateHandle(event) {
+      const stepEle = this.$refs.step.$el;
+      const width = stepEle.offsetWidth;
+      const startLoc = stepEle.getBoundingClientRect().left;
+
+      // 算出当前鼠标距离左侧的位置
+      let curValue =
+        ((event.clientX - startLoc) * (this.max - this.min)) / width + this.min;
+      curValue = this.filterValue(curValue);
+
+      if (this.startPosition === undefined) {
+        if (curValue === this.value) {
+          return false;
         }
+      } else if (curValue === this.startPosition) {
+        return false;
+      }
+
+      // 改变位置
+      this.currentValue = curValue;
+      this.$emit("input", this.currentValue);
+      return true;
     },
-    mounted() {
-        console.log('初始化')
+    filterValue(value) {
+      if (value < this.min) {
+        return this.min;
+      }
+      if (value > this.max) {
+        return this.max;
+      }
+      const stepNum = Math.round((value - this.min) / this.step);
+      return stepNum * this.step + this.min;
     },
-    methods: {
-        handleMouseEnter() {},
-        handleMouseLeave() {},
-        onButtonDown(event) {
-            if (this.disabled) return
-            event.preventDefault()
-            this.onDragStart(event)
-            document.body.addEventListener('mousemove', this.onDragging)
-            document.body.addEventListener('touchmove', this.onDragging)
-            document.body.addEventListener('mouseup', this.onDragEnd)
-            document.body.addEventListener('touchend', this.onDragEnd)
-        },
-        onDragStart(event) {
-            this.dragging = true
-            this.isClick = true
-            if (event.type === 'touchstart') {
-                event.clientY = event.touches[0].clientY
-                event.clientX = event.touches[0].clientX
-            }
-
-            this.startX = event.clientX
-
-            this.totalLength = this.$refs.trackbar.$el.clientWidth
-            this.startPosition = parseInt(this.totalLength * this.currentPercentage)
-
-            this.newPosition = this.startPosition
-        },
-        onDragging(event) {
-            if (this.dragging) {
-                this.isClick = false
-                let diff = 0
-                if (event.type === 'touchmove') {
-                    event.clientY = event.touches[0].clientY
-                    event.clientX = event.touches[0].clientX
-                }
-                this.currentX = event.clientX
-                diff = ((this.currentX - this.startX) / this.sliderSize)
-                this.totalLength = this.$refs.trackbar.$el.clientWidth
-                this.newPosition = (this.startPosition + diff) / this.totalLength * 100
-
-                this.setPosition(this.newPosition)
-            }
-        },
-        onDragEnd() {
-            if (this.dragging) {
-                this.dragging = false
-                document.body.removeEventListener('mousemove', this.onDragging)
-                document.body.removeEventListener('touchmove', this.onDragging)
-                document.body.removeEventListener('mouseup', this.onDragEnd)
-                document.body.removeEventListener('touchend', this.onDragEnd)
-            }
-        },
-        setPosition(pointPos) {
-            if (pointPos === null || isNaN(pointPos)) return
-            if (pointPos < 0) {
-                pointPos = 0
-            } else if (pointPos > 100) {
-                pointPos = 100
-            }
-            const lengthPerStep = 100 / ((this.max - this.min) / this.step)
-            const steps = Math.round(pointPos / lengthPerStep)
-            let value =
-        (steps * lengthPerStep * (this.max - this.min)) / 100 + this.min
-            value = parseFloat(value.toFixed(this.precision))
-
-            this.stopPosition = value
-            this.$emit('input', value)
-        },
-        sliderChange(event) {
-            this.$emit('change', event)
-        },
-        sliderChanging(event) {
-            this.$emit('changing', event)
-        }
+    revalicateRange() {
+      let filteredValue = this.filterValue(this.currentValue);
+      if (
+        isDecimals(this.min) ||
+        isDecimals(this.max) ||
+        isDecimals(this.step)
+      ) {
+        // 计算小数位
+        const maxDecimalsNumber = Math.max(
+          calcNumberOfDecimals(this.min),
+          calcNumberOfDecimals(this.max),
+          calcNumberOfDecimals(this.step)
+        );
+        filteredValue = +filteredValue.toFixed(maxDecimalsNumber);
+      }
+      this.filteredValue = filteredValue;
     },
-}
+    getValueWidth(value, min, max) {
+      return ((value - min) * 100) / (max - min) + "%";
+    },
+    getValueTextWidth(min, max, step) {
+      const maxIntegerNumber = Math.round(max).toString().length;
+      const maxDecimalsNumber = Math.max(
+        calcNumberOfDecimals(min),
+        calcNumberOfDecimals(max),
+        calcNumberOfDecimals(step)
+      );
+
+      return (
+        (maxDecimalsNumber > 0
+          ? maxIntegerNumber + maxDecimalsNumber
+          : maxIntegerNumber) + "ch"
+      );
+    },
+    getBlockSize(value){
+        return getLimitNumber(value, 12, 28)
+    }
+  }
+};
 </script>
 

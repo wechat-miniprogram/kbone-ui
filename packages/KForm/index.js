@@ -1,6 +1,7 @@
 import KRadio from './KRadio.vue'
 import KRadioGroup from './KRadioGroup.vue'
 import KCells from './KCells.vue'
+import KCell from './KCell.vue'
 import KCheckbox from './KCheckbox.vue'
 import KCheckboxGroup from './KCheckboxGroup.vue'
 import KSwitch from './KSwitch.vue'
@@ -14,6 +15,10 @@ KRadio.install = function(Vue) {
 
 KCells.install = function(Vue) {
     Vue.component(KCells.name, KCells)
+}
+
+KCell.install = function(Vue) {
+    Vue.component(KCell.name, KCell)
 }
 
 KCheckbox.install = function(Vue) {
@@ -43,6 +48,7 @@ KSlider.install = function(Vue) {
 export {
     KRadio,
     KCells,
+    KCell,
     KCheckbox,
     KCheckboxGroup,
     KRadioGroup,

@@ -16,48 +16,82 @@
 
 @import "../../base/fn";
 
-.weui-slider {
-    padding: 15px 18px;
-    user-select: none;
+.weui-slider-box {
+  display: flex;
+  align-items: center;
 }
 
-.weui-slider__inner {
-    position: relative;
-    height: 2px;
-    background-color: @weuiLineColorLight;
+.weui-slider-value {
+  color: @weuiTextColorDesc;
+  font-size: 14px;
+  margin-left: 1em;
+  text-align: center;
 }
 
-.weui-slider__track {
-    height: 2px;
-    background-color: @weuiColorPrimary;
-    width: 0;
+.weui-slider-tap-area {
+  padding: 15px 18px;
+  flex: 1;
 }
 
-.weui-slider__handler {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 28px;
-    height: 28px;
-    margin-left: -14px;
-    margin-top: -14px;
-    border-radius: 50%;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 4px rgba(0, 0, 0, .2);
+.weui-slider-handle-wrapper {
+  position: relative;
+  height: 2px;
+  border-radius: 5px;
+  background-color: @weuiLineColorLight;
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-
-.weui-slider-box{
-    display: flex;
-    align-items: center;
-    .weui-slider{
-        flex: 1;
-    }
+.weui-slider-track {
+  height: 100%;
+  width: 0;
+  border-radius: 6px;
+  background-color: @weuiColorPrimary;
+  transition: background-color 0.3s ease;
 }
-.weui-slider-box__value {
-    margin-left: .5em;
-    min-width: 24px;
-    color: @weuiTextColorDesc;
-    text-align: center;
-    font-size: 14px;
+
+.weui-slider-handle {
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  margin-left: -14px;
+  background-color: transparent;
+  z-index: 3;
+}
+
+.weui-slider-thumb {
+  z-index: 2;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.weui-slider-handle,
+.weui-slider-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: border-color 0.3s ease;
+}
+
+.weui-slider-step {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  z-index: 1;
+}
+.weui-slider-value {
+  color: #888;
+  font-size: 14px;
+  margin-left: 1em;
+  text-align: center;
+}
+.weui-slider-disabled .weui-slider-track {
+  background-color: #ccc;
+}
+.weui-slider-disabled .weui-slider-thumb {
+  background-color: #fff;
+  border-color: #ccc;
 }

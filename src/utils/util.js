@@ -50,3 +50,32 @@ export const tweenFunctions = {
         }
     },
 }
+
+// check is decimals
+export function isDecimals (number) {
+    return number % 1 !== 0
+}
+
+// to calculate the number of decimals
+export function calcNumberOfDecimals (number) {
+    number = +number
+  
+    if (isNaN(number) || !isDecimals(number)) {
+      return 0
+    }
+  
+    const numberString = number.toString()
+  
+    if (/\./.test(numberString)) {
+      return numberString.split('.')[1].length
+    } else {
+      return +numberString.split('e-')[1]
+    }
+  }
+
+export function getLimitNumber(number, min, max) {
+    if (number < min) return min
+    if (number > max) return max
+  
+    return number
+  }

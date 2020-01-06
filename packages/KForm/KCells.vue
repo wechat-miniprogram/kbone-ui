@@ -1,12 +1,14 @@
 <template>
-  <KView class="weui-cells__group weui-cells__group_form">
+  <KView class="weui-cells__group ">
     <KView
       v-if="title"
-      class="weui-cells__title">{{ title }}</KView>
+      class="weui-cells__title">
+      {{ title }}
+    </KView>
     <KView
       :class="classObject"
       class="weui-cells weui-cells_after-title weui-cells_form">
-      <slot/>
+      <slot></slot>
     </KView>
     <KView
       v-if="footer"
@@ -30,16 +32,11 @@ export default {
         footer: {
             type: String,
             value: ''
-        },
-        checkbox: {
-            type: Boolean,
-            default: false
         }
     },
     computed: {
         classObject() {
             return {
-                'weui-cells_checkbox': this.checkbox,
 
             }
         }

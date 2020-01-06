@@ -1,6 +1,6 @@
 <template>
   <KView class="weui-cell weui-cell_switch">
-    <KView class="weui-cell__bd">
+    <KView v-if="label" class="weui-cell__bd">
       {{ label }}
     </KView>
     <KView class="weui-cell__ft">
@@ -26,7 +26,6 @@ export default {
     props: {
         label: {
             type: String,
-            required: true
         },
         value: {
             type: Boolean,
