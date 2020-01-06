@@ -100,7 +100,11 @@ export default Vue.extend({
                         {
                             text: 'Swiper',
                             link: '/swiper'
-                        }
+                        },
+                        {
+                            text: 'Movable',
+                            link: routes.pages.movable,
+                        },
                     ]
                 },
                 {
