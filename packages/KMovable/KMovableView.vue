@@ -147,6 +147,9 @@ export default {
 
         this.$el.style.transformOrigin = 'center'
 
+        this.ignoredStyles = ['transform-origin', 'will-change', 'transform', '-webkit-transform']
+        this.previousStyle = null
+
         const observer = new MutationObserver(mutationLists => {
             mutationLists.forEach(mutation => {
                 if (mutation.attributeName === 'class') {
@@ -154,13 +157,14 @@ export default {
                     this.updateBoundary()
                     this.revise()
                 } else if (mutation.attributeName === 'style') {
-                    // console.log(mutation)
-                    // this.setTransform(this.translateX, this.translateY, this.scaling, '', true, false)
-                    // this.$el.style.transformOrigin = 'center'
+                    if (this.styleChanged()) {
+                        this.setTransform(this.translateX, this.translateY, this.scaling, '', true, false)
+                        this.$el.style.transformOrigin = 'center'
 
-                    // this.updateWidthAndHeight()
-                    // this.updateBoundary()
-                    // this.revise()
+                        this.updateWidthAndHeight()
+                        this.updateBoundary()
+                        this.revise()
+                    }
                 }
             })
         })
@@ -197,6 +201,16 @@ export default {
                 compo = compo.$parent
             }
             this.parentArea = compo
+        },
+        styleChanged() {
+            const newStyle = Array.from(this.$el.style)
+                .filter(key => this.ignoredStyles.indexOf(key) === -1)
+                .sort()
+                .map(key => key + ':' + this.$el.style[key])
+                .join(';')
+            const styleChanged = this.previousStyle && this.previousStyle !== newStyle
+            this.previousStyle = newStyle
+            return styleChanged
         },
         setParent(parent) {
             if (this.frictionAnimation) this.frictionAnimation = this.frictionAnimation.cancel()

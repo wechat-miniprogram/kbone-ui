@@ -87,6 +87,7 @@
           class="movable-view"
           direction="all"
           out-of-bounds
+          @change="onChange"
         >
           text
         </KMovableView>
