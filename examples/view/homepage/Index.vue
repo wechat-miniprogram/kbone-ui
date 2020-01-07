@@ -82,10 +82,6 @@ export default Vue.extend({
                             link: '/flex'
                         },
                         {
-                            text: 'ScrollView',
-                            link: '/scrollview'
-                        },
-                        {
                             text: 'Progress',
                             link: '/progress'
                         },
@@ -107,7 +103,11 @@ export default Vue.extend({
                         {
                             text: 'Swiper',
                             link: '/swiper'
-                        }
+                        },
+                        {
+                            text: 'ScrollView',
+                            link: '/scrollview'
+                        },
                     ]
                 },
                 {
