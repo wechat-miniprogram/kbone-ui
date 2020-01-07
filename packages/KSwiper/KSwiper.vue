@@ -1,7 +1,23 @@
 <template>
   <wx-swiper 
     v-if="ismp"
-
+        :autoplay="autoplay"
+        :current="current"
+        :interval="interval"
+        :duration="duration"
+        :circular="circular"
+        :vertical="vertical"
+        :indicator-dots="indicatorDots"
+        :indicator-color="indicatorColor"
+        :indicator-active-color="indicatorActiveColor"
+        :previous-margin="previousMargin"
+        :next-margin="nextMargin"
+        :easing-function="easingFunction"
+        :display-multiple-items="displayMultipleItems"
+        :skip-hidden-item-layout="skipHiddenItemLayout"
+        @change="itemChange"
+        @transition="transitionChange"
+        @animationfinish="animationfinish"
     >
       <slot></slot>
   </wx-swiper>
@@ -67,6 +83,10 @@ export default {
             type: Number,
             default: 500,
         },
+        value: {
+            type: Number,
+            default: 0
+        },
         current: {
             type: Number,
             default: 0,
@@ -120,7 +140,7 @@ export default {
                 ddx: 0, // 和前一个 move 位置的差值
                 ddy: 0
             },
-            currentOrder: this.current,
+            currentOrder: this.value || this.current,
             contentTrackViewport: 0,
             viewportPosition: 0,
             contentTrackT: 0,
@@ -147,6 +167,7 @@ export default {
         currentOrder(newValue,oldValue){
             if(newValue !== oldValue){
                 this.$emit('change',newValue)
+                this.$emit('input',newValue)
             }
         }
     },
@@ -634,6 +655,16 @@ export default {
 
             // 更新一下 dots 内容
             // this._updateDots(position)
+        },
+        itemChange(event){
+            this.$emit('input',event.detail.current)
+            this.$emit('change',event)
+        },
+        transitionChange(event){
+            this.$emit('transition',event)
+        },
+        animationfinish(event){
+            this.$emit('animationfinish',event)
         }
 
     },

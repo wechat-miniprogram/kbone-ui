@@ -7,10 +7,28 @@
 
     <KView class="page__bd page__bd_spacing">
       <KSlider/>
-      <KSlider :show-value="true" />
+      <KSlider
+        :show-value="true"
+        v-model="slider1"
+        @change="change" />
     </KView>
 
   </KView>
 
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            slider1: 10
+        }
+    },
+    methods: {
+        change() {
+            console.log(this.slider1)
+        }
+    }
+}
+</script>
 

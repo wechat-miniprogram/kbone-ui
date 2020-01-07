@@ -224,6 +224,14 @@ export default {
     },
     getBlockSize(value){
         return getLimitNumber(value, 12, 28)
+    },
+    sliderChange(event){
+        this.$emit('input',event.detail.value)
+        this.$emit('change',event)
+    },
+    sliderChanging(event){
+        this.$emit('input',event.detail.value)
+        this.$emit('changing',event)
     }
   }
 };
