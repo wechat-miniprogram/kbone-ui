@@ -6,6 +6,7 @@ import {
     KFlex,
     KFlexItem
 } from '../packages/KFlex'
+import KScrollView from '../packages/KScrollView'
 import {
     KRadio,
     KCells,
@@ -38,6 +39,7 @@ const components = [
     KButtonArea,
     KFlex,
     KFlexItem,
+    KScrollView,
     KRadio,
     KCells,
     KCell,
