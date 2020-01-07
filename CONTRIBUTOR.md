@@ -63,13 +63,11 @@ npm run test
 # 执行覆盖率检查
 npm run coverage
 
-# 接入 CI 覆盖率检查
-npm run codecov
 ```
 
-> PS：可参考 packages/miniprogram-element 的实现。
-
 在包内实现完单元测试后，需要在 kbone-ui 根目录下的 package.json 中补充相应的执行命令，确保在 kbone-ui 根目录下执行 `npm run test` 可以执行所有包内的单元测试。
+
+测试用例规范：[vue-utils](https://vue-test-utils.vuejs.org/)
 
 ### 版本规范
 

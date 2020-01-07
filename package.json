@@ -9,8 +9,8 @@
     "build:weui": "gulp compile --gulpfile examples/weui/gulpfile.js",
     "build": "cross-env NODE_ENV=production webpack --config build/bin/webpack.common.js --progress --hide-modules",
     "dev": "cross-env NODE_ENV=production webpack --config build/bin/webpack.common.js --progress --hide-modules --watch",
-    "test": "jest --colors --coverage --config .jestrc.json",
-    "test:nocov": "jest --colors --config .jestrc.json",
+    "test": "jest --colors --config .jestrc.json",
+    "coverage": "jest --colors --coverage  --config .jestrc.json",
     "cov": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {

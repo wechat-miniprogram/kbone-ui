@@ -22,8 +22,11 @@
 </template>
 
 <script>
+import KView from '../KView/index'
+
 export default {
     name: 'KCells',
+    components:{KView},
     props: {
         title: {
             type: String,
