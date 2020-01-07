@@ -65,7 +65,10 @@ export default {
                 }
             })
         })
-        observer.observe(this.$el, {attributes: true})
+        observer.observe(this.$el, {
+            attributes: true,
+            attributeFilter: ['style', 'class'],
+        })
     },
     methods: {
         movableViewChanged() {

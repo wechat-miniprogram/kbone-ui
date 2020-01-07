@@ -113,10 +113,10 @@ export default {
         }
     },
     computed: {
-        _xMove() {
+        xMove() {
             return !!(this.direction === 'horizontal' || this.direction === 'all')
         },
-        _yMove() {
+        yMove() {
             return !!(this.direction === 'vertical' || this.direction === 'all')
         },
         style() {
@@ -164,7 +164,10 @@ export default {
                 }
             })
         })
-        observer.observe(this.$el, {attributes: true})
+        observer.observe(this.$el, {
+            attributes: true,
+            attributeFilter: ['style', 'class'],
+        })
 
         if (this.x) this.setX(this.x)
         if (this.y) this.setY(this.y)
@@ -230,24 +233,24 @@ export default {
             if (typeof _x === 'string') _x = transformStrToNumber(_x)
             else if (typeof _x !== 'number') _x = 0
 
-            if (!this._xMove) return _x
+            if (!this.xMove) return _x
             if (_x + this.scaleOffset.x === this.translateX) return this.translateX
 
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
             this.animationTo(_x + this.scaleOffset.x, this._y + this.scaleOffset.y, this.duringScaleValueAnimation ? this.scaleValue : this.scaling)
-            this.x = _x
+            this._x = _x
         },
         setY(y) {
             let _y = y
             if (typeof _y === 'string') _y = transformStrToNumber(_y)
             else if (typeof _y !== 'number') _y = 0
 
-            if (!this._yMove) return _y
+            if (!this.yMove) return _y
             if (_y + this.scaleOffset.y === this.translateY) return this.translateY
 
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
             this.animationTo(this._x + this.scaleOffset.x, _y + this.scaleOffset.y, this.duringScaleValueAnimation ? this.scaleValue : this.scaling)
-            this.y = _y
+            this._y = _y
         },
         handleTouchStart(e) {
             this.touchTrack.onTouchEvent(e)
@@ -260,10 +263,10 @@ export default {
             this.touchInfo.historyY = [0, 0]
             this.touchInfo.historyT = [0, 0]
 
-            if (this._xMove) {
+            if (this.xMove) {
                 this._baseX = this.translateX
             }
-            if (this._yMove) {
+            if (this.yMove) {
                 this._baseY = this.translateY
             }
             this.$el.style.willChange = 'transform'
@@ -282,13 +285,13 @@ export default {
                 this._firstMoveDirection = Math.abs(e.touchDetail.dx / e.touchDetail.dy) > 1 ? 'htouchmove' : 'vtouchmove'
             }
 
-            if (this._xMove) {
+            if (this.xMove) {
                 x = e.touchDetail.dx + this._baseX
 
                 this.touchInfo.historyX.shift()
                 this.touchInfo.historyX.push(x)
 
-                if (!this._yMove && this._checkCanMove === null) {
+                if (!this.yMove && this._checkCanMove === null) {
                     if (Math.abs(e.touchDetail.dx / e.touchDetail.dy) > 1) {
                         this._checkCanMove = false
                     } else {
@@ -296,13 +299,13 @@ export default {
                     }
                 }
             }
-            if (this._yMove) {
+            if (this.yMove) {
                 y = e.touchDetail.dy + this._baseY
 
                 this.touchInfo.historyY.shift()
                 this.touchInfo.historyY.push(y)
 
-                if (!this._xMove && this._checkCanMove === null) {
+                if (!this.xMove && this._checkCanMove === null) {
                     if (Math.abs(e.touchDetail.dy / e.touchDetail.dx) > 1) {
                         this._checkCanMove = false
                     } else {
@@ -536,8 +539,8 @@ export default {
         animationTo(x, y, scale, source, notTriggerChange, needTriggerScale, cb) {
             if (this.frictionAnimation) this.frictionAnimation = this.frictionAnimation.cancel()
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
-            if (!this._xMove) x = this.translateX
-            if (!this._yMove) y = this.translateY
+            if (!this.xMove) x = this.translateX
+            if (!this.yMove) y = this.translateY
             if (!this.scale) scale = this.scaling
 
             const obj = this.getLimitXY(x, y)
@@ -588,9 +591,11 @@ export default {
             const changeY = subtract(y, this.scaleOffset.y)
             if ((this.translateX !== x || this.translateY !== y) && !notTriggerChange) {
                 this.$emit('change', {
-                    x: changeX,
-                    y: changeY,
-                    source,
+                    detail: {
+                        x: changeX,
+                        y: changeY,
+                        source,
+                    },
                 })
             }
 
@@ -601,9 +606,11 @@ export default {
             scale = +scale.toFixed(3)
             if (needTriggerScale && scale !== this.scaling) {
                 this.$emit('scale', {
-                    scale,
-                    x: changeX,
-                    y: changeY,
+                    detail: {
+                        scale,
+                        x: changeX,
+                        y: changeY,
+                    },
                 })
             }
 

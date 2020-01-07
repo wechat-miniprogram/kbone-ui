@@ -60,6 +60,27 @@
       </KMovableArea>
     </KCells>
 
+    <KCells title="多个 movable-view">
+      <KMovableArea class="movable-area">
+        <KMovableView
+          class="movable-view"
+          direction="all"
+          x="10"
+          y="10"
+        >
+          hello
+        </KMovableView>
+        <KMovableView
+          class="movable-view"
+          direction="all"
+          x="140"
+          y="140"
+        >
+          world
+        </KMovableView>
+      </KMovableArea>
+    </KCells>
+
     <KCells title="可超出边界">
       <KMovableArea class="movable-area">
         <KMovableView
@@ -128,7 +149,6 @@ export default {
     },
     methods: {
         tap() {
-            console.log(this.x, this.y)
             this.x = 30
             this.y = 30
             // const movableView = this.$refs.movableView
@@ -154,15 +174,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(40vw / 3);
-  width: calc(40vw / 3);
+  height: 50px;
+  width: 50px;
   background: #07C160;
   color: #fff;
 }
 
 .movable-area {
-  height: calc(160vw / 3);
-  width: calc(160vw / 3);
+  height: 200px;
+  width: 200px;
   margin: 32px;
   background-color: #ccc;
   overflow: hidden;
