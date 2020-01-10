@@ -268,7 +268,7 @@ export default {
         },
         handleTouchStart(e) {
             this.touchTrack.onTouchEvent(e)
-            if (this._isScaling || this.disabled) return
+            if (this.isScaling || this.disabled) return
 
             if (this.frictionAnimation) this.frictionAnimation = this.frictionAnimation.cancel()
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
@@ -278,52 +278,52 @@ export default {
             this.touchInfo.historyT = [0, 0]
 
             if (this.xMove) {
-                this._baseX = this.translateX
+                this.baseX = this.translateX
             }
             if (this.yMove) {
-                this._baseY = this.translateY
+                this.baseY = this.translateY
             }
             this.$el.style.willChange = 'transform'
-            this._checkCanMove = null
-            this._firstMoveDirection = null
-            this._isTouching = true
+            this.checkCanMove = null
+            this.firstMoveDirection = null
+            this.isTouching = true
         },
         handleTouchMove(_e) {
             const e = this.touchTrack.onTouchEvent(_e)
-            if (this._isScaling || this.disabled || !this._isTouching) return
+            if (this.isScaling || this.disabled || !this.isTouching) return
 
             let x = this.translateX
             let y = this.translateY
 
-            if (this._firstMoveDirection === null) {
-                this._firstMoveDirection = Math.abs(e.touchDetail.dx / e.touchDetail.dy) > 1 ? 'htouchmove' : 'vtouchmove'
+            if (this.firstMoveDirection === null) {
+                this.firstMoveDirection = Math.abs(e.touchDetail.dx / e.touchDetail.dy) > 1 ? 'htouchmove' : 'vtouchmove'
             }
 
             if (this.xMove) {
-                x = e.touchDetail.dx + this._baseX
+                x = e.touchDetail.dx + this.baseX
 
                 this.touchInfo.historyX.shift()
                 this.touchInfo.historyX.push(x)
 
-                if (!this.yMove && this._checkCanMove === null) {
+                if (!this.yMove && this.checkCanMove === null) {
                     if (Math.abs(e.touchDetail.dx / e.touchDetail.dy) > 1) {
-                        this._checkCanMove = false
+                        this.checkCanMove = false
                     } else {
-                        this._checkCanMove = true
+                        this.checkCanMove = true
                     }
                 }
             }
             if (this.yMove) {
-                y = e.touchDetail.dy + this._baseY
+                y = e.touchDetail.dy + this.baseY
 
                 this.touchInfo.historyY.shift()
                 this.touchInfo.historyY.push(y)
 
-                if (!this.xMove && this._checkCanMove === null) {
+                if (!this.xMove && this.checkCanMove === null) {
                     if (Math.abs(e.touchDetail.dy / e.touchDetail.dx) > 1) {
-                        this._checkCanMove = false
+                        this.checkCanMove = false
                     } else {
-                        this._checkCanMove = true
+                        this.checkCanMove = true
                     }
                 }
             }
@@ -331,7 +331,7 @@ export default {
             this.touchInfo.historyT.shift()
             this.touchInfo.historyT.push(e.touchDetail.timeStamp)
 
-            if (!this._checkCanMove) {
+            if (!this.checkCanMove) {
                 e.preventDefault()
 
                 let source = 'touch'
@@ -371,19 +371,19 @@ export default {
                 })
             }
 
-            const firstMoveDirection = this._firstMoveDirection
+            const firstMoveDirection = this.firstMoveDirection
             const event = dispatchEvent(this.$el, firstMoveDirection, e)
 
             if (event.defaultPrevented) e.stopPropagation()
         },
         handleTouchCancelOrEnd(_e) {
             this.touchTrack.onTouchEvent(_e)
-            if (this._isScaling || this.disabled || !this._isTouching) return
+            if (this.isScaling || this.disabled || !this.isTouching) return
 
             this.$el.style.willChange = 'auto'
-            this._isTouching = false
+            this.isTouching = false
 
-            if (this._checkCanMove) return
+            if (this.checkCanMove) return
 
             if (this.revise('out-of-bounds')) return
 
@@ -473,34 +473,34 @@ export default {
 
             const rect = this.$el.getBoundingClientRect()
 
-            this._height = rect.height / this.scaling
-            this._width = rect.width / this.scaling
+            this.height = rect.height / this.scaling
+            this.width = rect.width / this.scaling
 
-            const viewHeight = this._height * scale
-            const viewWidth = this._width * scale
+            const viewHeight = this.height * scale
+            const viewWidth = this.width * scale
 
-            this.scaleOffset.x = (viewWidth - this._width) / 2
-            this.scaleOffset.y = (viewHeight - this._height) / 2
+            this.scaleOffset.x = (viewWidth - this.width) / 2
+            this.scaleOffset.y = (viewHeight - this.height) / 2
         },
 
         updateBoundary() {
             const x1 = 0 - this.offset.x + this.scaleOffset.x
-            const x2 = this.areaWidth - this._width - this.offset.x - this.scaleOffset.x
+            const x2 = this.areaWidth - this.width - this.offset.x - this.scaleOffset.x
             this.minX = Math.min(x1, x2)
             this.maxX = Math.max(x1, x2)
 
             const y1 = 0 - this.offset.y + this.scaleOffset.y
-            const y2 = this.areaHeight - this._height - this.offset.y - this.scaleOffset.y
+            const y2 = this.areaHeight - this.height - this.offset.y - this.scaleOffset.y
             this.minY = Math.min(y1, y2)
             this.maxY = Math.max(y1, y2)
         },
 
-        _beginScale() {
-            this._isScaling = true
+        beginScale() {
+            this.isScaling = true
         },
 
         endScale() {
-            this._isScaling = false
+            this.isScaling = false
 
             this.updateOldScale(this.scaling)
         },
@@ -510,12 +510,12 @@ export default {
 
             scale *= this.oldScale
 
-            this._beginScale()
+            this.beginScale()
             this.updateScale(scale)
         },
 
         setTransformed(isTransformed) {
-            this._isTransformed = isTransformed
+            this.isTransformed = isTransformed
         },
 
         updateScale(scale, needAnimation, cb) {
@@ -523,7 +523,7 @@ export default {
 
             scale = this.adjustScale(scale)
 
-            if (!this._isTransformed) {
+            if (!this.isTransformed) {
                 this.updateWidthAndHeight(scale)
                 this.updateBoundary()
             }
