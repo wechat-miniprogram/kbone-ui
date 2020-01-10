@@ -8,6 +8,7 @@ import KBoneUI from '../../src/'
 import Home from '../view/homepage/Index.vue'
 import Button from '../view/components/button/button.vue'
 import Flex from '../view/components/flex/flex.vue'
+import ScrollView from '../view/components/scrollview/scrollview.vue'
 import Form from '../view/components/form/form.vue'
 import Slider from '../view/components/form/slider.vue'
 import ActionSheet from '../view/components/actionsheet/actionsheet.vue'
@@ -40,6 +41,11 @@ const router = new Router({
             path: routeConfig.pages.flex,
             name: 'Flex',
             component: Flex
+        },
+        {
+            path: routeConfig.pages.scrollview,
+            name: 'ScrollView',
+            component: ScrollView
         },
         {
             path: routeConfig.pages.form,
