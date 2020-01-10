@@ -14,5 +14,6 @@ export default {
         picker: '/picker',
         swiper: '/swiper',
         cells: '/cells',
+        movable: '/movable',
     }
 }

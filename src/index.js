@@ -32,6 +32,7 @@ import {
     KSwiper,
     KSwiperItem
 } from '../packages/KSwiper/'
+import {KMovableView, KMovableArea} from '../packages/KMovable'
 
 const components = [
     KView,
@@ -59,6 +60,8 @@ const components = [
     KSwiper,
     KSwiperItem,
     KIcon,
+    KMovableArea,
+    KMovableView,
 ]
 
 const install = function(Vue, opts = {}) {
@@ -108,4 +111,6 @@ export default {
     KSwiper,
     KSwiperItem,
     KIcon,
+    KMovableArea,
+    KMovableView,
 }

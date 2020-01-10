@@ -108,6 +108,10 @@ export default Vue.extend({
                             text: 'ScrollView',
                             link: '/scrollview'
                         },
+                        {
+                            text: 'Movable',
+                            link: routes.pages.movable,
+                        },
                     ]
                 },
                 {

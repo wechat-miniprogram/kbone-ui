@@ -17,6 +17,7 @@ const Toptips = () => import(/* webpackChunkName: "Topstips" */ '@/view/componen
 const Picker = () => import(/* webpackChunkName: "Picker" */ '@/view/components/picker/picker.vue')
 const Swiper = () => import(/* webpackChunkName: "Swiper" */ '@/view/components/swiper/swiper.vue')
 const Cells = () => import(/* webpackChunkName: "Cells" */ '@/view/components/cells/cells.vue')
+const Movable = () => import(/* webpackChunkName: "Movable" */ '@/view/components/movable/movable.vue')
 
 
 Vue.use(Router)
@@ -93,6 +94,11 @@ export default new Router({
             path: routeConfig.pages.cells,
             name: 'Cells',
             component: Cells
+        },
+        {
+            path: routeConfig.pages.movable,
+            name: 'Movable',
+            component: Movable
         }
     ]
 })
