@@ -88,6 +88,7 @@ export default {
     KButtonArea,
     KFlex,
     KFlexItem,
+    KScrollView,
     KRadio,
     KCells,
     KCell,

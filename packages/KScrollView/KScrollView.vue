@@ -1,5 +1,26 @@
 <template>
+  <wx-scroll-view
+    v-if="ismp"
+    ref="mp"
+    :scroll-x="scrollX"
+    :scroll-y="scrollY"
+    :scroll-top="mpScrollTop"
+    :scroll-left="mpScrollLeft"
+    :scroll-into-view="mpScrollIntoView"
+    :scroll-with-animation="scrollWithAnimation"
+    @scroll="scroll"
+    @scrolltoupper="mpScrollToUpper"
+    @scrolltolower="mpScrollToLower"
+  >
+    <div
+      ref="content"
+      style="height: 100%"
+    >
+      <slot/>
+    </div>
+  </wx-scroll-view>
   <div
+    v-else
     ref="wrap"
     @touchstart="touchstart"
     @touchmove="touchmove"
@@ -25,6 +46,8 @@
 </template>
 
 <script>
+import {ismp} from '@utils/util'
+
 export default {
     name: 'KScrollView',
     props: {
@@ -49,10 +72,6 @@ export default {
             type: String,
             default: '50px',
         },
-        test: {
-            type: String,
-            default: '0px',
-        },
         scrollTop: {
             type: String,
             default: '0px',
@@ -75,6 +94,12 @@ export default {
             default: false,
         },
     },
+    data: () => ({
+        ismp: !!ismp,
+        mpScrollLeft: '0px',
+        mpScrollTop: '0px',
+        mpScrollIntoView: '',
+    }),
     watch: {
         scrollX() {
             this._upperLowerStatusX = 'initial'
@@ -86,10 +111,14 @@ export default {
             this._upperLowerStatusY = 'initial'
             this._checkUpperLower()
         },
-        upperThreshold() {
+        upperThreshold(pos) {
+            const posVal = this.convertPosVal(pos)
+            this._upperThreshold = posVal
             this._checkUpperLower()
         },
-        lowerThreshold() {
+        lowerThreshold(pos) {
+            const posVal = this.convertPosVal(pos)
+            this._lowerThreshold = posVal
             this._checkUpperLower()
         },
         scrollTop(pos) {
@@ -101,30 +130,50 @@ export default {
             this.scrollTo(posVal, 'x')
         },
         scrollIntoView(id) {
+            if (ismp) return
             if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(id)) {
                 console.info(`[KScrollView] "${id}" is not a valid id.`)
                 return
             }
-            const relRect = this.$refs.main.getBoundingClientRect()
-            const rect = this.$refs.content.querySelector('#' + id).getBoundingClientRect()
-            if (this.scrollX) {
-                this.scrollTo(this.$refs.main.scrollLeft + rect.left - relRect.left, 'x')
-            }
-            if (this.scrollY) {
-                this.scrollTo(this.$refs.main.scrollTop + rect.top - relRect.top, 'y')
+            if (ismp) {
+                this.mpScrollIntoView = id
+            } else {
+                const relRect = this.$refs.main.getBoundingClientRect()
+                const rect = this.$refs.content.querySelector('#' + id).getBoundingClientRect()
+                if (this.scrollX) {
+                    this.scrollTo(this.$refs.main.scrollLeft + rect.left - relRect.left, 'x')
+                }
+                if (this.scrollY) {
+                    this.scrollTo(this.$refs.main.scrollTop + rect.top - relRect.top, 'y')
+                }
             }
         },
+    },
+    mounted() {
+        this._upperLowerStatusX = 'initial'
+        this._upperLowerStatusY = 'initial'
+        this._upperThreshold = 50
+        this._lowerThreshold = 50
     },
     methods: {
         convertPosVal(pos) {
             if (typeof pos === 'number') return pos
             const posStr = String(pos)
             if (/[-.0-9]+(px)?/.test(posStr)) {
-                return parseInt(posStr, 10)
+                return ismp ? posStr : parseFloat(posStr, 10)
             }
-            console.error('[KScrollView] scrollTop and scrollLeft only accept px values.')
+            console.error('[KScrollView] Positions only accept px values.')
         },
         scrollTo(val, direction) {
+            if (ismp) {
+                if (direction === 'x') {
+                    this.mpScrollLeft = val
+                } else if (direction === 'y') {
+                    this.mpScrollTop = val
+                }
+                return
+            }
+
             const main = this.$refs.main
 
             if (!this.scrollWithAnimation) {
@@ -168,17 +217,24 @@ export default {
                     } else if (direction === 'y') {
                         main.scrollTop = val - d
                     }
-                    requestAnimationFrame(aniFn)
+                    window.requestAnimationFrame(aniFn)
                 }
             }
-            requestAnimationFrame(aniFn)
+            window.requestAnimationFrame(aniFn)
         },
 
-        scroll() {
+        mpScrollToUpper() {
+            this.$emit('scrolltoupper')
+        },
+        mpScrollToLower() {
+            this.$emit('scrolltolower')
+        },
+
+        scroll(e) {
             const main = this.$refs.main
-            const detail = {
+            const detail = ismp ? e.detail : {
                 scrollLeft: main.scrollLeft,
-                scrollTop: main.scrollLeft,
+                scrollTop: main.scrollTop,
                 scrollHeight: main.scrollHeight,
                 scrollWidth: main.scrollWidth,
             }
@@ -186,13 +242,26 @@ export default {
             this._checkUpperLower()
         },
         _checkUpperLower() {
-            const main = this.$refs.main
-            if (main.scrollTop <= this.upperThreshold) {
+            if (ismp) return
+            if (this._upperLowerScheduled) {
+                return
+            }
+            this._upperLowerScheduled = () => {
+                this._upperLowerScheduled = null
+                const main = this.$refs.main
+                this._checkUpperLowerWithOffset(main)
+            }
+            if (!this._upperLowerChecking) {
+                this._upperLowerScheduled()
+            }
+        },
+        _checkUpperLowerWithOffset(main) {
+            if (main.scrollTop <= this._upperThreshold) {
                 if (this._upperLowerStatusY !== 'initial' && this._upperLowerStatusY !== 'upper') {
                     this.$emit('scrolltoupper')
                 }
                 this._upperLowerStatusY = 'upper'
-            } else if (main.scrollTop >= main.scrollHeight - main.clientHeight - this.lowerThreshold) {
+            } else if (main.scrollTop >= main.scrollHeight - main.clientHeight - this._lowerThreshold) {
                 if (this._upperLowerStatusY !== 'initial' && this._upperLowerStatusY !== 'lower') {
                     this.$emit('scrolltolower')
                 }
@@ -200,12 +269,12 @@ export default {
             } else {
                 this._upperLowerStatusY = 'center'
             }
-            if (main.scrollLeft <= this.upperThreshold) {
+            if (main.scrollLeft <= this._upperThreshold) {
                 if (this._upperLowerStatusX !== 'initial' && this._upperLowerStatusX !== 'upper') {
                     this.$emit('scrolltoupper')
                 }
                 this._upperLowerStatusX = 'upper'
-            } else if (main.scrollLeft >= main.scrollWidth - main.clientWidth - this.lowerThreshold) {
+            } else if (main.scrollLeft >= main.scrollWidth - main.clientWidth - this._lowerThreshold) {
                 if (this._upperLowerStatusX !== 'initial' && this._upperLowerStatusX !== 'lower') {
                     this.$emit('scrolltolower')
                 }
@@ -216,19 +285,21 @@ export default {
         },
         touchstart(e) {
             this._animationState = undefined
-            this._x = e.detail.x
-            this._y = e.detail.y
+            this._x = e.touches[0].clientX
+            this._y = e.touches[0].clientX
             this._noBubble = null
+            this._preventDefault = false
         },
         touchend() {
             this._noBubble = false
         },
         touchmove(e) {
             if (this._noBubble === null && this.scrollY) {
-                if (Math.abs(this._y - e.detail.y) / Math.abs(this._x - e.detail.x) > 1) {
+                if (Math.abs(this._y - e.touches[0].clientY) / Math.abs(this._x - e.touches[0].clientX) > 1) {
                     this._noBubble = true
                 } else {
                     this._noBubble = false
+                    this._preventDefault = true
                 }
                 if (this._isScrollingOnBoundary(e)) {
                     this._noBubble = false
@@ -236,21 +307,22 @@ export default {
             }
 
             if (this._noBubble === null && this.scrollX) {
-                if (Math.abs(this._x - e.detail.x) / Math.abs(this._y - e.detail.y) > 1) {
+                if (Math.abs(this._x - e.touches[0].clientX) / Math.abs(this._y - e.touches[0].clientY) > 1) {
                     this._noBubble = true
                 } else {
                     this._noBubble = false
+                    this._preventDefault = true
                 }
                 if (this._isScrollingOnBoundary(e)) {
                     this._noBubble = false
                 }
             }
 
-            this._x = e.detail.x
-            this._y = e.detail.y
-
             if (this._noBubble) {
                 e.stopPropagation()
+            }
+            if (this._preventDefault) {
+                e.preventDefault()
             }
         },
 

@@ -10,6 +10,8 @@
         scroll-y
         scroll-with-animation
         style="height: 100px"
+        @scrolltoupper="scrollToUpper"
+        @scrolltolower="scrollToLower"
       >
         <KView style="height: 100%; background: green; text-align: center; line-height: 100px">纵向滚动</KView>
         <KView style="height: 100%; background: cyan; text-align: center; line-height: 100px">纵向滚动</KView>
@@ -19,6 +21,8 @@
       <KScrollView
         :scroll-left="scrollLeft"
         scroll-x
+        @scrolltoupper="scrollToUpper"
+        @scrolltolower="scrollToLower"
       >
         <KView style="white-space: nowrap">
           <KView style="width: 100%; background: green; text-align: center; line-height: 100px; display: inline-block">横向滚动</KView>
@@ -41,12 +45,18 @@ export default {
     },
     methods: {
         applyScrollTop() {
-            if (this.scrollTop === '50px') this.scrollTop = '50'
+            if (this.scrollTop === '50px') this.scrollTop = '51px'
             else this.scrollTop = '50px'
         },
         applyScrollLeft() {
-            if (this.scrollLeft === '200px') this.scrollLeft = '200'
+            if (this.scrollLeft === '200px') this.scrollLeft = '201px'
             else this.scrollLeft = '200px'
+        },
+        scrollToUpper() {
+            console.info('scrolltoupper triggered')
+        },
+        scrollToLower() {
+            console.info('scrolltolower triggered')
         },
     }
 }
