@@ -227,7 +227,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .k-movable-area {
   display: block;
   position: relative;

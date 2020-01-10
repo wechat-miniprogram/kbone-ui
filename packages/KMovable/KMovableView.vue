@@ -648,7 +648,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .k-movable-view {
   display: inline-block;
   width: 10px;
