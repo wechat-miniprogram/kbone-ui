@@ -39,7 +39,7 @@
       v-if="indicatorDots"
       ref="slidesDots"
       class="weui-swiper-dots weui-swiper-dots-horizontal">
-        <KView v-for="(item,index) in itemsLength" 
+        <KView v-for="(item,index) in subItems" 
         class="weui-swiper-dot"
         :class="{
             'weui-swiper-dot-active': currentOrder === index
@@ -150,6 +150,7 @@ export default {
             viewportMoveRatio: 1,
             circularEnabled: this.circular, // 循环展示 flag
             ismp,
+            subItems: 0,
         }
     },
     watch:{
@@ -173,7 +174,8 @@ export default {
     },
     computed:{
         itemsLength(){
-            return this._getItems().length
+            this.subItems = this._getItems().length
+            return this.subItems
         }
     },
     mounted() {
@@ -185,6 +187,7 @@ export default {
             this.$refs.slidesWrapper.$el.addEventListener('touchend', this.handleEnd, false)
             this.$refs.slidesWrapper.$el.addEventListener('mouseup', this.handleEnd, false)
             this._resetLayout()
+            this.subItems = this.itemsLength
         }
     },
     beforeDestroy(){

@@ -74,7 +74,7 @@ export default {
     data() {
         return {
             background: ['demo-text-1', 'demo-text-2', 'demo-text-3'],
-            indicatorDots: false,
+            indicatorDots: true,
             circularFlag: false,
             autoplay: true,
             vertical: false,
