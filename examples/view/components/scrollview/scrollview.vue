@@ -10,6 +10,7 @@
         scroll-y
         scroll-with-animation
         style="height: 100px"
+        @scroll="scroll"
         @scrolltoupper="scrollToUpper"
         @scrolltolower="scrollToLower"
       >
@@ -21,6 +22,7 @@
       <KScrollView
         :scroll-left="scrollLeft"
         scroll-x
+        @scroll="scroll"
         @scrolltoupper="scrollToUpper"
         @scrolltolower="scrollToLower"
       >
@@ -51,6 +53,9 @@ export default {
         applyScrollLeft() {
             if (this.scrollLeft === '200px') this.scrollLeft = '201px'
             else this.scrollLeft = '200px'
+        },
+        scroll() {
+            console.info('scroll triggered')
         },
         scrollToUpper() {
             console.info('scrolltoupper triggered')
