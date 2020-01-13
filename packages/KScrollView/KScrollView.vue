@@ -8,6 +8,8 @@
     :scroll-left="mpScrollLeft"
     :scroll-into-view="mpScrollIntoView"
     :scroll-with-animation="scrollWithAnimation"
+    :upper-threshold="upperThreshold"
+    :lower-threshold="lowerThreshold"
     @scroll="scroll"
     @scrolltoupper="mpScrollToUpper"
     @scrolltolower="mpScrollToLower"
@@ -154,6 +156,10 @@ export default {
         this._upperLowerStatusY = 'initial'
         this._upperThreshold = 50
         this._lowerThreshold = 50
+        const posValX = this.convertPosVal(this.scrollLeft)
+        this.scrollTo(posValX, 'x')
+        const posValY = this.convertPosVal(this.scrollTop)
+        this.scrollTo(posValY, 'y')
     },
     methods: {
         convertPosVal(pos) {
