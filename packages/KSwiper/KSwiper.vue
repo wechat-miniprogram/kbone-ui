@@ -155,6 +155,7 @@ export default {
     },
     watch:{
         circular(){
+            if(ismp) return
             this.circularEnabled = this.circular
             this._resetLayout()
         },
