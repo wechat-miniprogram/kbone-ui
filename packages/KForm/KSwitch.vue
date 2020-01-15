@@ -5,13 +5,21 @@
     </KView>
     <KView class="weui-cell__ft">
       <label class="weui-switch-cp">
+        <wx-switch 
+          v-if="ismp"
+          :disabled="disabled"
+          :checked="isChecked"
+          class="weui-switch-cp__input"
+          @change="handleChange"
+        />
         <input
+          v-else
           :disabled="disabled"
           :checked="isChecked"
           type="checkbox"
           class="weui-switch-cp__input"
           @change="handleChange"
-        >
+        />
         <KView
           :class="{'is-checked':isChecked}"
           class="weui-switch-cp__box" />
@@ -21,6 +29,8 @@
 </template>
 
 <script>
+import {ismp} from "@utils/util";
+
 export default {
     name: 'KSwitch',
     props: {
@@ -37,7 +47,8 @@ export default {
     },
     data() {
         return {
-            isChecked: this.value
+            isChecked: this.value,
+            ismp
         }
     },
     methods: {
@@ -46,6 +57,11 @@ export default {
                 return
             }
             this.isChecked = e.target.checked
+
+            if (ismp) {
+                console.log(e.detail.value)
+                this.isChecked = e.detail.value
+            }
 
             this.$emit('input', this.isChecked)
             this.$emit('change', {

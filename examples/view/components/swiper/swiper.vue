@@ -82,6 +82,11 @@ export default {
             duration: 500,
             interval: 2000
         }
+    },
+    watch: {
+        indicatorDots() {
+            console.log(this.indicatorDots)
+        }
     }
 }
 
