@@ -101,34 +101,32 @@ export default {
   mounted() {
     if (!ismp) {
       const handle = this.$refs.handle.$el;
+      const wrapper = this.$refs.wrapper.$el;
       this.revalicateRange()
       handle.addEventListener("touchstart", this.onDragStart, false);
-      handle.addEventListener("mousedown", this.onDragStart, false);
+      wrapper.addEventListener("mousedown", this.onDragStart, false);
       handle.addEventListener("touchmove", this.onDragging, false);
-      handle.addEventListener("mousemove", this.onDragging, false);
+      wrapper.addEventListener("mousemove", this.onDragging, false);
       handle.addEventListener("touchend", this.onDragEnd, false);
-      handle.addEventListener("mouseup", this.onDragEnd, false);
+      wrapper.addEventListener("mouseup", this.onDragEnd, false);
     }
   },
   beforeDestroy() {
     if (!ismp) {
       const handle = this.$refs.handle.$el;
+      const wrapper = this.$refs.wrapper.$el;
       handle.removeEventListener("touchstart", this.onDragStart, false);
-      handle.removeEventListener("mousedown", this.onDragStart, false);
+      wrapper.removeEventListener("mousedown", this.onDragStart, false);
       handle.removeEventListener("touchmove", this.onDragging, false);
-      handle.removeEventListener("mousemove", this.onDragging, false);
+      wrapper.removeEventListener("mousemove", this.onDragging, false);
       handle.removeEventListener("touchend", this.onDragEnd, false);
-      handle.removeEventListener("mouseup", this.onDragEnd, false);
+      wrapper.removeEventListener("mouseup", this.onDragEnd, false);
     }
   },
   methods: {
     onDragStart(event) {
       if (this.disabled) return;
       this.dragging = true;
-      if (event.type === "touchstart") {
-        event.clientY = event.touches[0].clientY;
-        event.clientX = event.touches[0].clientX;
-      }
       this.startPosition = this.currentValue;
     },
     onDragging(event) {
@@ -137,6 +135,7 @@ export default {
           event.clientY = event.touches[0].clientY;
           event.clientX = event.touches[0].clientX;
         }
+        console.log(event.clientX, event.clientY, event)
 
         this.updateHandle(event);
         this.$emit("changing", event);
@@ -173,6 +172,7 @@ export default {
         return false;
       }
 
+      console.log(curValue)
       // 改变位置
       this.currentValue = curValue;
       this.$emit("input", this.currentValue);
