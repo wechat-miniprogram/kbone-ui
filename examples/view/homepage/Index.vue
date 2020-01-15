@@ -128,6 +128,10 @@ export default Vue.extend({
                             link: '/toast'
                         },
                         {
+                            text: 'Dialog',
+                            link: '/dialog'
+                        },
+                        {
                             text: 'Toptips',
                             link: '/toptips'
                         }
