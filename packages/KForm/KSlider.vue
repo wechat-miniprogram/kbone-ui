@@ -135,7 +135,6 @@ export default {
           event.clientY = event.touches[0].clientY;
           event.clientX = event.touches[0].clientX;
         }
-        console.log(event.clientX, event.clientY, event)
 
         this.updateHandle(event);
         this.$emit("changing", event);
@@ -172,7 +171,6 @@ export default {
         return false;
       }
 
-      console.log(curValue)
       // 改变位置
       this.currentValue = curValue;
       this.$emit("input", this.currentValue);
