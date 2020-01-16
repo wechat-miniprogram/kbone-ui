@@ -1,5 +1,12 @@
 <template>
+  <wx-movable-area
+    v-if="ismp"
+    :scale-area="scaleArea"
+  >
+    <slot />
+  </wx-movable-area>
   <div
+    v-else
     class="k-movable-area"
     @touchstart="handleTouchStart"
     @touchmove="handleTouchMove"
@@ -10,6 +17,7 @@
 </template>
 
 <script>
+import {ismp} from '@utils/util'
 import KView from '../KView'
 import {
     getLength
@@ -44,6 +52,7 @@ export default {
     },
     data() {
         return {
+            ismp
         }
     },
     watch: {
@@ -56,6 +65,7 @@ export default {
         this.pinchStartLen = null
     },
     mounted() {
+        if (ismp) return
         this.isMounted = true
 
         const observer = new MutationObserver(mutationLists => {

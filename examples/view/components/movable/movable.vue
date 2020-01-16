@@ -1,22 +1,20 @@
 <template>
-  <KView class="page movable js_show">
+  <KView class="page movable js_show kbone-ui-example-movable">
     <KView class="page__hd">
       <h1 class="page__title">Movable</h1>
       <p class="page__desc">MovableArea 和 MovableView 组件</p>
     </KView>
     <KCells title="movable-view区域小于movable-area">
       <KMovableArea class="movable-area">
-        <KView>
-          <KMovableView
-            ref="movableView"
-            :x="x"
-            :y="y"
-            class="movable-view"
-            direction="all"
-          >
-            text
-          </KMovableView>
-        </KView>
+        <KMovableView
+          ref="movableView"
+          :x="x"
+          :y="y"
+          class="movable-view"
+          direction="all"
+        >
+          text
+        </KMovableView>
       </KMovableArea>
       <KButton
         class="page-body-button"
@@ -170,31 +168,33 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.movable-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  width: 50px;
-  background: #07C160;
-  color: #fff;
-}
+<style lang="less">
+.kbone-ui-example-movable {
+  .movable-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+    background: #07C160;
+    color: #fff;
+  }
 
-.movable-area {
-  height: 200px;
-  width: 200px;
-  margin: 32px;
-  background-color: #ccc;
-  overflow: hidden;
-}
+  .movable-area {
+    height: 200px;
+    width: 200px;
+    margin: 32px;
+    background-color: #ccc;
+    overflow: hidden;
+  }
 
-.max {
-  width: 80vw;
-  height: 80vw;
-}
+  .max {
+    width: 80vw;
+    height: 80vw;
+  }
 
-.page-body-button {
-  margin: 32px;
+  .page-body-button {
+    margin: 32px;
+  }
 }
 </style>

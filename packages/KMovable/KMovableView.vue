@@ -1,5 +1,26 @@
 <template>
+  <wx-movable-view
+    v-if="ismp"
+    :x="x"
+    :y="y"
+    :direction="direction"
+    :out-of-bounds="outOfBounds"
+    :inertia="inertia"
+    :friction="friction"
+    :damping="damping"
+    :scale="scale"
+    :animation="animation"
+    :disabled="disabled"
+    :scale-min="scaleMin"
+    :scale-max="scaleMax"
+    :scale-value="scaleValue"
+    @change="bindchange"
+    @scale="bindscale"
+  >
+    <slot />
+  </wx-movable-view>
   <div
+    v-else
     class="k-movable-view"
     @touchstart="handleTouchStart"
     @touchmove="handleTouchMove"
@@ -11,6 +32,7 @@
 </template>
 
 <script>
+import {ismp} from '@utils/util'
 import {
     Decline,
     Friction,
@@ -87,6 +109,7 @@ export default {
     },
     data() {
         return {
+            ismp,
             touchTrack: createTouchTrack(),
             isKBoneUIMovableView: true,
             areaWidth: 0,
@@ -134,6 +157,7 @@ export default {
         y: 'setY',
     },
     mounted() {
+        if (ismp) return
         this.$el.setAttribute('aria-dropeffect', 'move')
         this.$el.setAttribute('aria-label', '可移动')
 
@@ -203,6 +227,7 @@ export default {
             this.parentArea = compo
         },
         styleChanged() {
+            if (ismp) return
             const newStyle = Array.from(this.$el.style)
                 .filter(key => this.ignoredStyles.indexOf(key) === -1)
                 .sort()
@@ -213,6 +238,7 @@ export default {
             return styleChanged
         },
         setParent(parent) {
+            if (ismp) return
             if (this.frictionAnimation) this.frictionAnimation = this.frictionAnimation.cancel()
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
 
@@ -237,12 +263,14 @@ export default {
             this.updateOldScale(scale)
         },
         setScaleMinOrMax() {
+            if (ismp) return
             if (!this.scale) return false
 
             this.updateScale(this.scaling, true)
             this.updateOldScale(this.scaling)
         },
         setX(x) {
+            if (ismp) return
             let _x = x
             if (typeof _x === 'string') _x = transformStrToNumber(_x)
             else if (typeof _x !== 'number') _x = 0
@@ -255,6 +283,7 @@ export default {
             this._x = _x
         },
         setY(y) {
+            if (ismp) return
             let _y = y
             if (typeof _y === 'string') _y = transformStrToNumber(_y)
             else if (typeof _y !== 'number') _y = 0
@@ -423,12 +452,14 @@ export default {
             }
         },
         setDisabled(val) {
+            if (ismp) return
             if (val === false) {
                 this.handleTouchStart()
             }
         },
 
         setScaleValue(newVal) {
+            if (ismp) return
             if (!this.scale) return false
 
             newVal = this.adjustScale(newVal)
@@ -644,11 +675,22 @@ export default {
                 })
             }
         },
+
+        bindchange(...args) {
+            this.$emit('change', ...args)
+        },
+        bindscale(...args) {
+            this.$emit('scale', ...args)
+        }
     }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.wx-movable-view {
+    height: 100%;
+    width: 100%;
+}
 .k-movable-view {
   display: inline-block;
   width: 10px;

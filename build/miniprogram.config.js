@@ -44,5 +44,6 @@ module.exports = {
     projectConfig: {
         projectname: 'kbone-ui',
         appid: '',
+        libVersion: '2.10.0'
     },
 }
