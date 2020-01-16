@@ -17,20 +17,6 @@ const transformStrToNumber = input => {
     return 0
 }
 
-const dispatchEvent = (element, eventName, e) => {
-    const event = new CustomEvent(eventName, {
-        bubbles: false,
-        cancelable: true,
-        composed: true,
-        detail: {
-            touches: e.touches || {},
-            changedTouches: e.changedTouches || {}
-        }
-    })
-    element.dispatchEvent(event)
-    return event
-}
-
 const getElementOffsetX = (elem, parent) => {
     if (elem === parent) {
         return 0
@@ -100,7 +86,6 @@ export {
     transformStrToNumber,
     getElementOffsetX,
     getElementOffsetY,
-    dispatchEvent,
     subtract,
     createAnimation
 }

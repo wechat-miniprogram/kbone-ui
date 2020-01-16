@@ -12,6 +12,10 @@
           :y="y"
           class="movable-view"
           direction="all"
+          @change="onChange"
+          @scale="onScale"
+          @htouchmove="onMove"
+          @vtouchmove="onMove"
         >
           text
         </KMovableView>
@@ -163,6 +167,10 @@ export default {
         },
         onScale(e) {
             console.log(e.detail)
+        },
+        onMove(e) {
+            console.log(e.touches)
+            console.log(e.changedTouches)
         }
     }
 }

@@ -16,6 +16,8 @@
     :scale-value="scaleValue"
     @change="bindchange"
     @scale="bindscale"
+    @htouchmove="bindhtouchmove"
+    @vtouchmove="bindvtouchmove"
   >
     <slot />
   </wx-movable-view>
@@ -40,7 +42,6 @@ import {
     transformStrToNumber,
     createTouchTrack,
     subtract,
-    dispatchEvent,
     createAnimation,
     getElementOffsetX,
     getElementOffsetY,
@@ -275,8 +276,14 @@ export default {
             if (typeof _x === 'string') _x = transformStrToNumber(_x)
             else if (typeof _x !== 'number') _x = 0
 
-            if (!this.xMove) return _x
-            if (_x + this.scaleOffset.x === this.translateX) return this.translateX
+            if (!this.xMove) {
+                this._x = _x
+                return
+            }
+            if (_x + this.scaleOffset.x === this.translateX) {
+                this._x = this.translateX
+                return
+            }
 
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
             this.animationTo(_x + this.scaleOffset.x, this._y + this.scaleOffset.y, this.duringScaleValueAnimation ? this.scaleValue : this.scaling)
@@ -288,8 +295,14 @@ export default {
             if (typeof _y === 'string') _y = transformStrToNumber(_y)
             else if (typeof _y !== 'number') _y = 0
 
-            if (!this.yMove) return _y
-            if (_y + this.scaleOffset.y === this.translateY) return this.translateY
+            if (!this.yMove) {
+                this._y = _y
+                return
+            }
+            if (_y + this.scaleOffset.y === this.translateY) {
+                this._y = this.translateY
+                return
+            }
 
             if (this.springAnimation) this.springAnimation = this.springAnimation.cancel()
             this.animationTo(this._x + this.scaleOffset.x, _y + this.scaleOffset.y, this.duringScaleValueAnimation ? this.scaleValue : this.scaling)
@@ -401,9 +414,11 @@ export default {
             }
 
             const firstMoveDirection = this.firstMoveDirection
-            const event = dispatchEvent(this.$el, firstMoveDirection, e)
-
-            if (event.defaultPrevented) e.stopPropagation()
+            const event = {
+                touches: e.touches || {},
+                changedTouches: e.changedTouches || {}
+            }
+            this.$emit(firstMoveDirection, event)
         },
         handleTouchCancelOrEnd(_e) {
             this.touchTrack.onTouchEvent(_e)
@@ -681,6 +696,12 @@ export default {
         },
         bindscale(...args) {
             this.$emit('scale', ...args)
+        },
+        bindhtouchmove(...args) {
+            this.$emit('htouchmove', ...args)
+        },
+        bindvtouchmove(...args) {
+            this.$emit('vtouchmove', ...args)
         }
     }
 }
