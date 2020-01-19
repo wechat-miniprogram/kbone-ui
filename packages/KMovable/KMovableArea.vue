@@ -7,7 +7,7 @@
   </wx-movable-area>
   <div
     v-else
-    class="k-movable-area"
+    class="weui-movable-area"
     @touchstart="handleTouchStart"
     @touchmove="handleTouchMove"
     @touchend="handleTouchEnd"
@@ -236,16 +236,3 @@ export default {
     }
 }
 </script>
-
-<style lang="less">
-.k-movable-area {
-  display: block;
-  position: relative;
-  width: 10px;
-  height: 10px;
-
-  &[hidden]{
-    display: none;
-  }
-}
-</style>

@@ -23,7 +23,7 @@
   </wx-movable-view>
   <div
     v-else
-    class="k-movable-view"
+    class="weui-movable-view"
     @touchstart="handleTouchStart"
     @touchmove="handleTouchMove"
     @touchend="handleTouchCancelOrEnd"
@@ -709,22 +709,3 @@ export default {
     }
 }
 </script>
-
-<style lang="less" scoped>
-.wx-movable-view {
-    height: 100%;
-    width: 100%;
-}
-.k-movable-view {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  top: 0px;
-  left: 0px;
-  position: absolute;
-
-  &[hidden]{
-    display: none;
-  }
-}
-</style>
