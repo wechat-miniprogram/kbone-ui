@@ -162,8 +162,8 @@ export default {
         this.$el.setAttribute('aria-dropeffect', 'move')
         this.$el.setAttribute('aria-label', '可移动')
 
-        this.getParentMovableArea()
-        if (this.parentArea) this.parentArea.$emit('k-movable-view-changed')
+        this._x = 0
+        this._y = 0
 
         if (this.friction <= 0) this.friction = 2
         this.frictionModel.reconfigure(1, this.friction)
@@ -202,6 +202,9 @@ export default {
         if (this.y) this.setY(this.y)
         if (this.scaleMin || this.scaleMax) this.setScaleMinOrMax()
         if (this.scale) this.setScale()
+
+        this.getParentMovableArea()
+        if (this.parentArea) this.parentArea.$emit('k-movable-view-changed')
     },
     detached() {
         if (this.parentArea) this.parentArea.$emit('k-movable-view-changed')
