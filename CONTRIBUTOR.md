@@ -49,6 +49,10 @@
 
 统一走 eslint 来约束，在 kbone-ui 根目录下执行：`npm run lint` 会对各个包内的 src、test、tool 目录下的 js 文件进行检查，确保无任何规则失败提示。
 
+### 新增样式
+
+所有的新增样式应该以 `weui-` 开头，如果是组件样式，需要修改对应的 .less 文件，目录地址为 ./examples/weui/widget。
+
 ### 单元测试
 
 各个包内部实现单元测试和覆盖率检查，统一使用 jest 工具链；如果涉及到自定义组件则使用 miniprogram-simulate；如果有 CI 需求，则使用 codecov 来管理覆盖率检查。
