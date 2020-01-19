@@ -11,6 +11,8 @@
         :autoplay="autoplay"
         :duration="duration"
         :interval="interval"
+        v-model="current"
+        @change="changeItem"
       >
         <KSwiperItem
           v-for="(item,index) in background"
@@ -80,7 +82,13 @@ export default {
             vertical: false,
             pointer: false,
             duration: 500,
-            interval: 2000
+            interval: 2000,
+            current: 0
+        }
+    },
+    methods: {
+        changeItem() {
+            console.log(this.current)
         }
     }
 }

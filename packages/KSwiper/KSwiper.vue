@@ -168,8 +168,8 @@ export default {
         },
         currentOrder(newValue,oldValue){
             if(newValue !== oldValue){
-                this.$emit('change',newValue)
                 this.$emit('input',newValue)
+                this.$emit('change',newValue)
             }
         }
     },
@@ -282,7 +282,7 @@ export default {
             if (_temp) {
                 // TODO: 处理 touchcancel 事件
                 this.updateSwiper(this.contentTrackViewport)
-            } else if (this.current !== toPos) {
+            } else if (this.currentOrder !== toPos) {
                 this._currentChangeSource = 'touch'
                 this.currentOrder = toPos
                 this._animateViewport(toPos, 'touch', extraMovement)
