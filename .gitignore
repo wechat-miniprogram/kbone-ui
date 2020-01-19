@@ -14,4 +14,3 @@ lib
 .npmrc
 coverage
 dist
-package-lock.json
