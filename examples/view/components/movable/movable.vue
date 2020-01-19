@@ -197,8 +197,8 @@ export default {
   }
 
   .max {
-    width: 80vw;
-    height: 80vw;
+    width: 300px;
+    height: 300px;
   }
 
   .page-body-button {
