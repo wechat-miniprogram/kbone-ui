@@ -153,7 +153,6 @@ export default {
         disabled: 'setDisabled',
         scaleMin: 'setScaleMinOrMax',
         scaleMax: 'setScaleMinOrMax',
-        scale: 'setScale',
         x: 'setX',
         y: 'setY',
     },
@@ -201,7 +200,6 @@ export default {
         if (this.x) this.setX(this.x)
         if (this.y) this.setY(this.y)
         if (this.scaleMin || this.scaleMax) this.setScaleMinOrMax()
-        if (this.scale) this.setScale()
 
         this.getParentMovableArea()
         if (this.parentArea) this.parentArea.$emit('k-movable-view-changed')
