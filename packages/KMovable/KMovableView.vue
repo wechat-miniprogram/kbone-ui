@@ -88,7 +88,7 @@ export default {
             default: false,
         },
         animation: {
-            type: Boolean,
+            type: [String, Boolean],
             default: true,
         },
         disabled: {
