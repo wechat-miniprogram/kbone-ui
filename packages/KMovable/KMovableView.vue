@@ -45,7 +45,7 @@ import {
     createAnimation,
     getElementOffsetX,
     getElementOffsetY,
-} from './utils'
+} from '@utils/movable-utils/index'
 import KView from '../KView'
 
 const MOVABLE_VIEW_SCALE_MIN = 0.5

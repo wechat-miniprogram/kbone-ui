@@ -43,10 +43,6 @@ export default {
             type: Array,
             default() { return [] }
         },
-        onCancel: {
-            type: Function,
-            default: () => {}
-        },
         value: {
             type: Boolean,
             default: false
@@ -60,13 +56,17 @@ export default {
     watch: {
         value(newValue) {
             this.isShow = newValue
+            if( newValue === false ) {
+              // 弹窗关闭时，额外触发事件
+              this.$emit('cancel')
+            }
         }
     },
     methods: {
         maskClick(event) {
             this.isShow = false
             this.$emit('input', false)
-            this.onCancel(event)
+            this.$emit('cancel', event)
         }
     }
 }

@@ -21,7 +21,7 @@ import {ismp} from '@utils/util'
 import KView from '../KView'
 import {
     getLength
-} from './utils'
+} from '@utils/movable-utils/index'
 
 
 const isAncestor = (node, ancestor) => {
