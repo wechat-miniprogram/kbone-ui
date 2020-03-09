@@ -259,6 +259,9 @@ export default {
                     -this.currentPos.ddx / deltaT
                 )
             }
+            // 禁掉外部 webview 的滚动
+            event.preventDefault()
+            return false
         },
         handleEnd(event) {
             if (this.autoplay) this._scheduleAutoplay()
@@ -663,6 +666,7 @@ export default {
         itemChange(event){
             this.$emit('input',event.detail.current)
             this.$emit('change',event)
+            this.$emit('bindchange',event)
         },
         transitionChange(event){
             this.$emit('transition',event)
