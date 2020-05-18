@@ -53,7 +53,7 @@ export default {
         change(data) {
             this.currentValue = data
             this.$emit('input', data)
-            this.$emit('bindchange', data)
+            this.$emit('change', data)
         }
     },
 }
