@@ -21,7 +21,6 @@
 @import "weui-btn_warn";
 @import "weui-btn_disabled";
 @import "weui-btn_loading";
-@import "weui-btn_plain";
 @import "weui-btn_cell";
 
 button, input {
@@ -44,21 +43,15 @@ button, input {
 
 .weui-btn_mini, .miniprogram-root .weui-btn_mini{
     display: inline-block;
-    width:auto;
-    padding: 0 unit(12px/@weuiBtnMiniFontSize,em);
+    width: auto;
+    padding: 0 unit(12px/@weuiBtnMiniFontSize, em);
     line-height: unit(@weuiBtnMiniHeight/@weuiBtnMiniFontSize);
     font-size: @weuiBtnMiniFontSize;
 }
 
 
-/*gap between btn*/
+/* gap between btn */
 .weui-btn:not(.weui-btn_mini) + .weui-btn:not(.weui-btn_mini) {
-    margin-top: @weuiBtnDefaultGap;
-}
-.weui-btn + .weui-btn {
-    margin-top: @weuiBtnDefaultGap;
-}
-.wx-button + .wx-button{
     margin-top: @weuiBtnDefaultGap;
 }
 
@@ -68,12 +61,11 @@ button, input {
 }
 
 .weui-btn-area {
-    margin: 48px @weuiBtnDefaultGap 8px; 
-
+    margin: 48px @weuiBtnDefaultGap 8px;
 }
 .weui-btn-area_inline {
     display: flex;
-    .weui-btn,.wx-button {
+    .weui-btn {
         margin-top: auto;
         margin-right: @weuiBtnDefaultGap;
         width: 100%;
@@ -84,17 +76,17 @@ button, input {
     }
 }
 
-.weui-btn_reset{
-  background:transparent;
-  border:0;
-  padding:0;
-  outline:0;
+.weui-btn_reset {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    outline: 0;
 }
-.weui-btn_icon{
-  font-size:0;
-  &:active{
-    [class*="weui-icon-"]{
-      color:rgba(0,0,0,.5);
+.weui-btn_icon {
+    font-size: 0;
+    &:active {
+        [class*="weui-icon-"] {
+            color: var(--weui-FG-1);
+        }
     }
-  }
 }
