@@ -6,6 +6,7 @@
     </KView>
     <KView class="page__bd picker_page page__bd_spacing">
       <KPickerView
+        v-model="index"
         indicator-style="height: 50px;"
         style="width: 100%; height: 300px;"
         @change="changeIndex">
@@ -33,6 +34,7 @@ export default {
                 '开发六组',
                 '零度的田'
             ],
+            index: 2
         }
     },
     methods: {

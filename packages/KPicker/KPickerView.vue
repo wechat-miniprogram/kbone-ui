@@ -34,6 +34,10 @@ export default {
         maskClass: {
             type: String,
             value: '',
+        },
+        value: {
+            type: Number,
+            value: 0
         }
     },
     data() {
@@ -46,6 +50,7 @@ export default {
     },
     methods: {
         change(index) {
+            this.$emit('input', index)
             this.$emit('change', index)
         },
         setIndicatorStyle() {
@@ -54,6 +59,7 @@ export default {
                 // 覆盖 indicator 样式
                 col.$refs.indicator.$el.style = this.indicatorStyle
                 col.renderItems()
+                col.updatePos(this.value || 0)
             })
         }
     },

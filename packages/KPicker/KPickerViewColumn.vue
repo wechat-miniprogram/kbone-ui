@@ -74,6 +74,10 @@ export default {
                 child.style.overflow = 'hidden'
             }
         },
+        updatePos(index) {
+            let diff = (this.offset - index) * this.itemHeight
+            this.stop(diff,false) 
+        },
         startHandler(event) {
             if (event.type === 'touchstart') {
                 event.clientY = event.touches[0].clientY
@@ -158,7 +162,7 @@ export default {
 
             this.start = null
         },
-        stop(diff) {
+        stop(diff, animation=true) {
             this.translate += diff
 
             this.translate =
@@ -180,7 +184,12 @@ export default {
 
             // TODO 支持 disabled 选项
             const index = this.offset - this.translate / this.itemHeight
-            this.setTransition(this.$refs.content.$el, 0.3)
+            if (animation) {
+                this.setTransition(this.$refs.content.$el, 0.3)
+            } else {
+                this.setTransition(this.$refs.content.$el, 0)
+            }
+            
             this.setTranslate(this.$refs.content.$el, this.translate)
 
             // TODO 触发 KPickerView 的 onchagne 事件
