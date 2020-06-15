@@ -25,6 +25,7 @@ export default {
     name: 'KPickerViewColumn',
     data() {
         return {
+            order:0,
             itemHeight: 54,
             bodyHeight: 54 * 5,
             offset: 2,
@@ -193,7 +194,7 @@ export default {
             this.setTranslate(this.$refs.content.$el, this.translate)
 
             // TODO 触发 KPickerView 的 onchagne 事件
-            this.parent.change(index)
+            this.parent.change(this.order,index)
         },
         getMin(offset, rowHeight, length) {
             return -(rowHeight * (length - offset - 1))

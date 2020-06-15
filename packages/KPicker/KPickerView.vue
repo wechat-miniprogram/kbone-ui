@@ -1,10 +1,12 @@
 <template>
   <wx-picker-view
     v-if="ismp"
+    :value="value"
     :indicator-style="indicatorStyle"
     :indicator-class="indicatorClass"
     :mask-style="maskStyle"
-    :mask-class="maskClass">
+    :mask-class="maskClass"
+    @change="updateKey">
     <slot/>
   </wx-picker-view>
   <KView
@@ -36,8 +38,8 @@ export default {
             value: '',
         },
         value: {
-            type: Number,
-            value: 0
+            type: Array,
+            value: []
         }
     },
     data() {
@@ -49,17 +51,23 @@ export default {
         !ismp && this.setIndicatorStyle()
     },
     methods: {
-        change(index) {
-            this.$emit('input', index)
-            this.$emit('change', index)
+        change(key,index) {
+            this.value[key] = index
+            this.$emit('input', this.value)
+            this.$emit('change', this.value)
+        },
+        updateKey(event) {
+            this.$emit('input', event.detail.value)
+            this.$emit('change', event.detail.value)
         },
         setIndicatorStyle() {
             const columns = findDownComponent(this, 'KPickerViewColumn')
-            columns.forEach(col => {
+            columns.forEach((col,index) => {
                 // 覆盖 indicator 样式
                 col.$refs.indicator.$el.style = this.indicatorStyle
+                col.order = index
                 col.renderItems()
-                col.updatePos(this.value || 0)
+                col.updatePos(this.value[index] || 0)
             })
         }
     },

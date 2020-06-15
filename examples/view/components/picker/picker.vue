@@ -18,6 +18,14 @@
             {{ item }}
           </KView>
         </KPickerViewColumn>
+        <KPickerViewColumn>
+          <KView
+            v-for="(item,index) in singleData"
+            :key="index"
+            style="line-height: 50px;" >
+            {{ item }}
+          </KView>
+        </KPickerViewColumn>
       </KPickerView>
     </KView>
   </KView>
@@ -34,7 +42,7 @@ export default {
                 '开发六组',
                 '零度的田'
             ],
-            index: 2
+            index: [2]
         }
     },
     methods: {
