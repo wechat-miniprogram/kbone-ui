@@ -86,6 +86,12 @@ export default {
             current: 0
         }
     },
+    mounted() {
+        setTimeout(() => {
+            // v-model 自动跳转
+            this.current = 2
+        }, 3000)
+    },
     methods: {
         changeItem() {
             console.log(this.current)

@@ -171,6 +171,14 @@ export default {
                 this.$emit('input',newValue)
                 this.$emit('change',newValue)
             }
+        },
+        value(newValue) {
+            if(newValue === this.currentOrder) {
+                return
+            }
+            this._resetLayout()
+            this._animateViewport(newValue, '', 0)
+            this.currentOrder = newValue
         }
     },
     computed:{
