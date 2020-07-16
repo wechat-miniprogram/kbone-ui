@@ -151,6 +151,13 @@ export default {
             value: false,
         },
     },
+    watch:{
+        value(newValue) {
+            if(newValue !== this.internalValue) {
+                this.internalValue = newValue
+            }
+        }
+    },
     data() {
         return {
             internalValue: this.value,
