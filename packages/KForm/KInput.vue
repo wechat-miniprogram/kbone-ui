@@ -169,6 +169,8 @@ export default {
             this.internalValue = ''
             this.$refs.field.focus()
             this.$emit('clear')
+            this.$emit('input', '')
+            this.$emit('change', '')
         },
         inputHandler(e) {
             if (this.readonly || this.disabled) {

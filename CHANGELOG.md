@@ -1,3 +1,8 @@
+## 0.6.11
+
+* 修复 Kinput 双向绑定问题
+* 修复 Kinput clearable 无法清除 value 问题
+
 ## 0.5.x
 
 ### Features
