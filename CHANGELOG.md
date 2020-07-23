@@ -1,3 +1,7 @@
+## 0.6.12
+
+* 修复 KScrollView `_isScrollingOnBoundary` 错误
+
 ## 0.6.11
 
 * 修复 Kinput 双向绑定问题

@@ -168,7 +168,7 @@ export default {
             if (/[-.0-9]+(px)?/.test(posStr)) {
                 return ismp ? posStr : parseFloat(posStr, 10)
             }
-            console.error('[KScrollView] Positions only accept px values.')
+            console.warn('[KScrollView] Positions only accept px values.')
         },
         scrollTo(val, direction) {
             if (ismp) {
@@ -331,8 +331,24 @@ export default {
                 e.preventDefault()
             }
         },
+        _isScrollingOnBoundary(e){
+            // do not check if scroll direction is not set
+            if (!this.scrollX && !this.scrollY) return false
 
+            const delta = this.scrollX ? e.detail.dx : e.detail.dy
 
+            const node = e.target
+            const scrollDelta = this.scrollX
+              ? node.scrollLeft
+              : node.scrollTop
+
+            const maxScrollDelta = this.scrollX
+              ? node.scrollWidth - node.clientWidth
+              : node.scrollHeight - node.clientHeight
+
+            return (delta > 0 && scrollDelta <= 0) ||
+            (delta < 0 && scrollDelta >= maxScrollDelta)
+        }
     }
 }
 </script>
