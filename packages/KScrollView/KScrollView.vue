@@ -292,7 +292,7 @@ export default {
         touchstart(e) {
             this._animationState = undefined
             this._x = e.touches[0].clientX
-            this._y = e.touches[0].clientX
+            this._y = e.touches[0].clientY
             this._noBubble = null
             this._preventDefault = false
         },
