@@ -3,7 +3,7 @@
     <KView class="weui-cell__hd">
       <label class="weui-label">{{ label }}</label>
     </KView>
-    <KView class="weui-cell__bd">
+    <KView class="weui-cell__bd weui-flex">
       <input
         ref="field"
         :type="type"
