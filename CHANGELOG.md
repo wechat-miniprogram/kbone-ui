@@ -1,3 +1,6 @@
+## 0.6.15
+
+* 修复 input clear button 位置问题
 ## 0.6.12
 
 * 修复 KScrollView `_isScrollingOnBoundary` 错误
