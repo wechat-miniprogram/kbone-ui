@@ -2,6 +2,7 @@
 
 `kbone-ui` 是一个能同时支持 小程序(kbone) 和 vue 框架开发的多端 UI 库。
 
+> 注意：此仓库为 kbone-ui 0.x 版本，基于 Vue 实现。1.x 版本已迁移至 [kbone 主仓库下](https://github.com/Tencent/kbone/tree/develop/packages/kbone-ui)，新版采用 Web Components 实现，不依赖 Web 框架，有需要可点进 [1.x 版本文档](https://wechat-miniprogram.github.io/kbone/docs/kbone-ui/#%E7%AE%80%E4%BB%8B)了解详情。
 
 ## 特性
 
